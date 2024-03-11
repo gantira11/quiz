@@ -10,12 +10,12 @@ export class Roles {
   @Column()
   name: string;
 
-  @Column({ default: moment.utc() })
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
 
-  @Column({ default: moment.utc() })
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
   updated_at: Date;
 
-  @Column({})
+  @Column({ nullable: true })
   deleted_at: Date;
 }
