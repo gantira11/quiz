@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BeforeInsert } from 'typeorm';
+import { Users } from './users.entity';
 
 const moment = require('moment');
 
@@ -18,4 +19,7 @@ export class Roles {
 
   @Column({ nullable: true })
   deleted_at: Date;
+
+  @OneToMany(() => Users, (user) => {user.role_id})
+  users: Users[];
 }

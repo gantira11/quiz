@@ -5,6 +5,7 @@ import { config } from './config';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RoleModule } from './module/roles/role.module';
+import { UserModule } from './module/users/user.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { RoleModule } from './module/roles/role.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       logging: (process.env?.APP_DEBUG||'') === 'true'
     }),
-    RoleModule
+    RoleModule,
+    UserModule
   ],
   controllers: [],
   providers: [],

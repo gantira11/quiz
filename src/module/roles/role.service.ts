@@ -41,8 +41,6 @@ export class RoleService {
         query.andWhere('role.name like :name', {name: `%${params.keyword}%`})
       }
 
-      console.log('query', query.getQuery())
-
       let count = await query.getCount();
       let pageCount = Math.ceil(count / limit)
 
@@ -77,8 +75,8 @@ export class RoleService {
       }
 
       return result
-    } catch (error) {
-      
+    } catch (err) {
+      throw new HttpException(err.message, err.code)
     }
   }
 
@@ -100,6 +98,13 @@ export class RoleService {
         .set(data)
         .where('id = :id', {id})
         .execute()
+        .then(async (res) => {
+          if(res.affected < 1) throw new HttpException('Failed to update data', HttpStatus.INTERNAL_SERVER_ERROR)
+          return await this.rolesRepository
+            .createQueryBuilder('role')
+            .where('role.id = :id', {id})
+            .getOne()
+        })
     } catch (err) {
       throw new HttpException(err.message, err.code)
     }
