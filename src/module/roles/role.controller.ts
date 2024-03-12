@@ -5,7 +5,6 @@ import {
   Body, 
   Post,
   Res, 
-  UseGuards,
   HttpStatus,
   Param,
   Get,
@@ -15,7 +14,6 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthUser } from 'src/utils/decorators';
-import JwtAuthGuard from 'src/utils/guards/jwt-auth.guard';
 import { responseError, responseSuccess } from 'src/utils/response';
 import { CreateRoleDTO, GetDetailDTO } from './dto/index.dto';
 import { Logger } from 'nestjs-pino';

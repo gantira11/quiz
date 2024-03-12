@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RoleModule } from './module/roles/role.module';
 import { UserModule } from './module/users/user.module';
+import { QuizModule } from './module/quizzes/quiz.module';
 
 @Module({
   imports: [
@@ -26,7 +27,8 @@ import { UserModule } from './module/users/user.module';
       logging: (process.env?.APP_DEBUG||'') === 'true'
     }),
     RoleModule,
-    UserModule
+    UserModule,
+    QuizModule
   ],
   controllers: [],
   providers: [],

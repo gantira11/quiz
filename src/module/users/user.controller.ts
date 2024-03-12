@@ -39,7 +39,7 @@ export class UserController {
   ) {}
 
   @Post('/create')
-  @ApiOperation({ summary: 'Create Role' })
+  @ApiOperation({ summary: 'Create User' })
   @UsePipes(ValidationPipe)
   async create(@Body() body: CreateUserDTO, @Res() res) {
     let response = {}, statusCode = 500
@@ -78,7 +78,7 @@ export class UserController {
   }
 
   @Post('/login')
-  @ApiOperation({ summary: 'Lofin Role' })
+  @ApiOperation({ summary: 'Login User' })
   @UsePipes(ValidationPipe)
   async login(@Headers() headers: HeaderParamsDTO, @Body() body: LoginDTO, @Res() res) {
     let response = {}, statusCode = 500
@@ -154,7 +154,7 @@ export class UserController {
   }
 
   @Put('update/:id')
-  @ApiOperation({ summary: 'Update Role' })
+  @ApiOperation({ summary: 'Update User' })
   @UseGuards(JwtAuthGuard)
   @UsePipes(ValidationPipe)
   async update(
@@ -201,7 +201,7 @@ export class UserController {
   }
 
   @Delete('delete/:id')
-  @ApiOperation({ summary: 'Detail Role' })
+  @ApiOperation({ summary: 'Detail User' })
   @UseGuards(JwtAuthGuard)
   @UsePipes(ValidationPipe)
   async delete(@Param() param: GetDetailUserDTO, @Res() res) {
