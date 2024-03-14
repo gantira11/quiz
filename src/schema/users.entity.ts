@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BeforeInsert, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { Roles } from './roles.entity';
+import { Answers } from './answers.entity';
 
 const moment = require('moment');
 
@@ -32,4 +33,7 @@ export class Users {
   @ManyToOne(() => Roles, (role) => role.users, {eager: true})
   @JoinColumn({ name: 'role_id' })
   role: Roles;
+
+  @OneToMany(() => Answers, answer => answer.user)
+  answers: Answers[]
 }

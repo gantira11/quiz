@@ -49,3 +49,13 @@ export interface UpdateOptionPayload {
   name?: string;
   is_correct?: boolean;
 }
+
+interface Answer {
+  quetion_id: string;
+  option_id: string;
+}
+
+export interface CreateAnswerPayload {
+  quiz_id: string;
+  quetions: Answer[];
+} 

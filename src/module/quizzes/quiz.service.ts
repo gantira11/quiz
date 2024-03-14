@@ -1,12 +1,22 @@
-import { Injectable, Logger, HttpStatus, HttpException } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Subjects } from 'src/schema/subjects.entity';
 import { Videos } from 'src/schema/videos.entity';
-import { CreateQuizzesPayload, CreateSubjectPayload, UpdateOptionPayload, UpdateQuetionPayload, UpdateQuizzessPayload, UpdateSubjectPayload, UpdateVideoPayload } from 'src/interface/quiz.interface';
+import {
+  CreateAnswerPayload,
+  CreateQuizzesPayload,
+  CreateSubjectPayload,
+  UpdateOptionPayload,
+  UpdateQuetionPayload,
+  UpdateQuizzessPayload,
+  UpdateSubjectPayload,
+  UpdateVideoPayload
+} from 'src/interface/quiz.interface';
 import { Quizzes } from 'src/schema/quizzes.entity';
 import { Quetions } from 'src/schema/quetions.entity';
 import { Options } from 'src/schema/options.entity';
+import { Answers } from 'src/schema/answers.entity';
 
 const moment = require('moment');
 
@@ -23,6 +33,8 @@ export class QuizService {
     private quetionsRepository: Repository<Quetions>,
     @InjectRepository(Options)
     private optionsRepository: Repository<Options>,
+    @InjectRepository(Answers)
+    private answersRepository: Repository<Answers>,
   ) {}
 
   async subjectCreate(body: CreateSubjectPayload) {
@@ -548,6 +560,144 @@ export class QuizService {
         .where('id = :id', {id})
         .execute()
 
+    } catch (err) {
+      throw new HttpException(err.message, err.code)
+    }
+  }
+
+  async answerCreate(user_id: string, body: CreateAnswerPayload) {
+    try {
+      let totalQuetion = 0
+      let totalAnswer = 0
+
+      let data: any = body
+      data['user_id'] = user_id
+      data['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+      data['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+
+      const quizzes = await this.quizzesRepository
+        .createQueryBuilder('quiz')
+        .leftJoinAndSelect('quiz.quetions', 'que')
+        .leftJoinAndSelect('que.options', 'op')
+        .where('quiz.id = :id', {id: data.quiz_id})
+        .getOne()
+
+      if(!quizzes) throw new HttpException('Quizzes is not found.', HttpStatus.NOT_FOUND)
+
+      quizzes.quetions.forEach((item) => {
+        const correct = item.options.find((op) => op.is_correct)
+        let answer: any = data.quetions.find((que) => que.quetion_id === item.id)
+        answer = answer.option_id === correct.id
+
+        if(!!answer) ++totalAnswer
+      })
+
+      totalQuetion = quizzes.quetions.length
+
+      const point = ( totalAnswer / totalQuetion ) * 100
+      data['point'] = !!!Number.isInteger(point) ? point.toFixed(2) : point
+      data['quetions'] = JSON.stringify(data.quetions)
+
+      return await this.answersRepository.save(
+        await this.answersRepository.create(data)
+      )
+    } catch (err) {
+      throw new HttpException(err.message, err.code)
+    }
+  }
+
+  async answerList(params: any, auth_user) {
+    try {
+      let page = params.page ? parseInt(params.page) : 1
+      let limit = params.limit ? parseInt(params.limit) : 10
+
+      let query = await this.answersRepository
+        .createQueryBuilder('ans')
+        .leftJoinAndSelect('ans.quiz', 'quiz')
+        .leftJoinAndSelect('ans.user', 'user')
+        .where('ans.deleted_at is null')
+
+      if(auth_user.role.name !== 'admin') {
+        query.andWhere('ans.user_id = :user_id', {user_id: auth_user.id})
+      }
+
+      if(!!params.keyword) {
+        query.andWhere('quiz.name like :name OR user.name like :name', {name: `%${params.keyword}%`})
+      }
+
+      let count = await query.getCount();
+      let pageCount = Math.ceil(count / limit)
+
+      if (page > pageCount) {
+        page = page == 1 ? page : pageCount
+      }
+
+      const offset = page == 1 ? 0 : (page - 1) * limit
+
+      let report = await query
+        .take(limit)
+        .skip(offset)
+        .getMany();
+
+      const slNo = page == 1 ? 0 : (page - 1) * limit - 1
+
+      const paginator = {
+        itemCount: count,
+        limit: limit,
+        pageCount: pageCount,
+        page: page,
+        slNo: slNo + 1,
+        hasPrevPage: page > 1 ? true : false,
+        hasNextPage: page < pageCount ? true : false,
+        prevPage: page > 1 && page != 1 ? page - 1 : null,
+        nextPage: page < pageCount ? page + 1 : null,
+      };
+
+      let result = {
+        subjects: count > 0 ? report : [],
+        paginator: paginator
+      }
+
+      return result
+    } catch (err) {
+      throw new HttpException(err.message, err.code)
+    }
+  }
+
+  async answerDetail(id: string) {
+    try {
+      let result = {}
+      let answer = await this.answersRepository
+        .createQueryBuilder('ans')
+        .leftJoinAndSelect('ans.quiz', 'quiz')
+        .leftJoinAndSelect('quiz.subject', 'subs')
+        .leftJoinAndSelect('quiz.quetions', 'que')
+        .leftJoinAndSelect('que.options', 'op')
+        .leftJoinAndSelect('ans.user', 'user')
+        .getOne()
+
+      if(!answer) throw new HttpException('Answers is not found.', HttpStatus.NOT_FOUND)
+
+      result['quiz_name'] = `${answer.quiz.subject.name} - ${answer.quiz.name}`
+      result['student_name'] = answer.user.name
+      result['point'] = answer.point
+
+      let userAnswer = JSON.parse(answer.quetions)
+      userAnswer = userAnswer.map((item) => {
+        const findQue = answer.quiz.quetions.find((que) => que.id === item.quetion_id)
+        const ansOpt = findQue.options.find((op) => op.id === item.option_id)
+        const trueOpt = findQue.options.find((op) => !!op.is_correct)
+
+        return {
+          quetion: findQue.name,
+          user_answer: ansOpt.name,
+          true_answer: trueOpt.name
+        }
+      })
+
+      result['answers'] = userAnswer
+
+      return result
     } catch (err) {
       throw new HttpException(err.message, err.code)
     }

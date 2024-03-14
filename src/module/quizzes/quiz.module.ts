@@ -7,6 +7,7 @@ import { QuizService } from './quiz.service';
 import { Quizzes } from 'src/schema/quizzes.entity';
 import { Quetions } from 'src/schema/quetions.entity';
 import { Options } from 'src/schema/options.entity';
+import { Answers } from 'src/schema/answers.entity';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { Options } from 'src/schema/options.entity';
       Videos,
       Quizzes,
       Quetions,
-      Options
+      Options,
+      Answers
     ]),
   ],
   controllers: [QuizController],

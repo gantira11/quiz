@@ -21,7 +21,7 @@ import JwtAuthGuard from 'src/utils/guards/jwt-auth.guard';
 import { responseError, responseSuccess } from 'src/utils/response';
 import { PaginationParams } from 'src/utils/dto/pagination-dto';
 import { QuizService } from './quiz.service';
-import { CreateQuizzesDTO, CreateSubjectDTO, ParamsId, UpdateQuetionDTO, UpdateQuizzesDTO, UpdateSubjectDTO, UpdateVideosDTO } from './dto/index.dto';
+import { CreateAnswerDTO, CreateQuizzesDTO, CreateSubjectDTO, ParamsId, UpdateQuetionDTO, UpdateQuizzesDTO, UpdateSubjectDTO, UpdateVideosDTO } from './dto/index.dto';
 
 const moment = require('moment');
 
@@ -460,6 +460,74 @@ export class QuizController {
     try {
       if(auth_user.role.name !== 'admin') throw new HttpException('Access Not Allowed', HttpStatus.BAD_REQUEST)
       const process = await this.quizService.optionDelete(param.id)
+
+      if(!process) {
+        response = responseError(statusCode, 'Internal Server Error');
+      } else {
+        statusCode = HttpStatus.OK;
+        response = responseSuccess(statusCode, 'Success', process);
+      }
+
+      res.status(statusCode).json(response);
+    } catch (error) {
+      response = responseError(statusCode, error)
+      res.status(statusCode).json(response)
+    }
+  }
+
+  @Post('/create-answer')
+  @ApiOperation({ summary: 'Create Answers' })
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(ValidationPipe)
+  async answerCreate(@Body() body: CreateAnswerDTO, @AuthUser() auth_user, @Res() res) {
+    let response = {}, statusCode = 500
+    try {
+      const process = await this.quizService.answerCreate(auth_user.id, body)
+
+      if(!process) {
+        response = responseError(statusCode, 'Internal Server Error')
+      } else {
+        statusCode = HttpStatus.OK;
+        response = responseSuccess(statusCode, 'Success', process)
+      }
+
+      res.status(statusCode).json(response);
+    } catch (error) {
+      response = responseError(statusCode, error)
+      res.status(statusCode).json(response)
+    }
+  }
+
+  @Get('answer-list')
+  @ApiOperation({ summary: 'List Answers' })
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(ValidationPipe)
+  async answerList(@Query() param: PaginationParams, @AuthUser() auth_user,  @Res() res) {
+    let response = {}, statusCode = 500
+    try {
+      const process = await this.quizService.answerList(param, auth_user)
+
+      if(!process) {
+        response = responseError(statusCode, 'Internal Server Error');
+      } else {
+        statusCode = HttpStatus.OK;
+        response = responseSuccess(statusCode, 'Success', process);
+      }
+
+      res.status(statusCode).json(response);
+    } catch (error) {
+      response = responseError(statusCode, error)
+      res.status(statusCode).json(response)
+    }
+  }
+
+  @Get('answer-detail/:id')
+  @ApiOperation({ summary: 'Detail Answers' })
+  @UsePipes(ValidationPipe)
+  async answerDetail(@Param() param: ParamsId, @Res() res) {
+    let response = {}, statusCode = 500
+    try {
+      const process = await this.quizService.answerDetail(param.id)
 
       if(!process) {
         response = responseError(statusCode, 'Internal Server Error');

@@ -159,3 +159,31 @@ export class UpdateOptionDTO {
   @IsOptional()
   is_correct: boolean;
 }
+
+class Answer {
+  @ApiProperty()
+  @Type(() => String)
+  @IsString()
+  @IsNotEmpty()
+  quetion_id: string;
+
+  @ApiProperty()
+  @Type(() => String)
+  @IsString()
+  @IsNotEmpty()
+  option_id: string;
+}
+
+export class CreateAnswerDTO {
+  @ApiProperty()
+  @Type(() => String)
+  @IsString()
+  @IsNotEmpty()
+  quiz_id: string;
+
+  @ApiProperty({type: [Answer]})
+  @Type(() => Answer)
+  @IsNotEmpty()
+  @ValidateNested({each: true})
+  quetions: Answer[];
+}

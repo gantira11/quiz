@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { Subjects } from './subjects.entity';
 import { Quetions } from './quetions.entity';
+import { Answers } from './answers.entity';
 
 const moment = require('moment');
 
@@ -30,4 +31,7 @@ export class Quizzes {
   
   @OneToMany(() => Quetions, question => question.quiz)
   quetions: Quetions[];
+
+  @OneToMany(() => Answers, answer => answer.quiz)
+  answers: Answers[]
 }
