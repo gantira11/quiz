@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Videos } from './videos.entity';
+import { Quizzes } from './quizzes.entity';
 
 const moment = require('moment');
 
@@ -23,6 +24,9 @@ export class Subjects {
   @Column({ nullable: true })
   deleted_at: Date;
 
-  @OneToMany(() => Videos, (video) => {video.subject_id})
+  @OneToMany(() => Videos, video => video.subject)
   videos: Videos[];
+  
+  @OneToMany(() => Quizzes, quiz => quiz.subject)
+  quizzes: Quizzes[];
 }

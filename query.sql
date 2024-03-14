@@ -56,8 +56,8 @@ CREATE TABLE quizzes (
     deleted_at TIMESTAMP DEFAULT NULL
 );
 
--- Tabel questions
-CREATE TABLE questions (
+-- Tabel quetions
+CREATE TABLE quetions (
     id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     name VARCHAR(255) NOT NULL,
     discuss TEXT DEFAULT NULL,
@@ -73,8 +73,8 @@ CREATE TABLE options (
     id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     name VARCHAR(255) NOT NULL,
     is_correct BOOLEAN NOT NULL DEFAULT FALSE,
-    question_id CHAR(36),
-    FOREIGN KEY (question_id) REFERENCES questions(id),
+    quetion_id CHAR(36),
+    FOREIGN KEY (quetion_id) REFERENCES quetions(id),
     created_at TIMESTAMP DEFAULT NULL,
     updated_at TIMESTAMP DEFAULT NULL,
     deleted_at TIMESTAMP DEFAULT NULL
@@ -83,7 +83,7 @@ CREATE TABLE options (
 -- Tabel answers
 CREATE TABLE answers (
     id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
-    questions TEXT NOT NULL,
+    quetions TEXT NOT NULL,
     point DOUBLE NOT NULL,
     quiz_id CHAR(36),
     FOREIGN KEY (quiz_id) REFERENCES quizzes(id),

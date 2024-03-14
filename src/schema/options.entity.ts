@@ -1,10 +1,10 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { Subjects } from './subjects.entity';
+import { Quetions } from './quetions.entity';
 
 const moment = require('moment');
 
 @Entity()
-export class Videos {
+export class Options {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -12,10 +12,10 @@ export class Videos {
   name: string;
 
   @Column()
-  file_url: string;
+  is_correct: boolean;
 
   @Column()
-  subject_id: string;
+  quetion_id: string;
 
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
@@ -26,7 +26,7 @@ export class Videos {
   @Column({ nullable: true })
   deleted_at: Date;
 
-  @ManyToOne(() => Subjects, subject => subject.videos, { eager: true })
-  @JoinColumn({ name: 'subject_id' })
-  subject: Subjects;
+  @ManyToOne(() => Quetions, quetion => quetion.options, { eager: true })
+  @JoinColumn({ name: 'quetion_id' })
+  quetion: Quetions;
 }

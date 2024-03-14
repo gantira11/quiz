@@ -1,4 +1,4 @@
-import { IsArray, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsBoolean, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -59,7 +59,7 @@ export class UpdateSubjectDTO {
   content: string;
 }
 
-export class UpdateVideosPayload {
+export class UpdateVideosDTO {
   @ApiProperty()
   @Type(() => String)
   @IsString()
@@ -71,4 +71,91 @@ export class UpdateVideosPayload {
   @IsString()
   @IsOptional()
   file_url: string;
+}
+
+class Options {
+  @ApiProperty()
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  name: string;
+
+  @ApiProperty()
+  @Type(() => Boolean)
+  @IsBoolean()
+  is_correct: boolean;
+}
+
+class Quetions {
+  @ApiProperty()
+  @Type(() => String)
+  @IsString()
+  name: string;
+
+  @ApiProperty()
+  @Type(() => String)
+  @IsString()
+  discuss: string;
+
+  @ApiProperty({type: [Options]})
+  @Type(() => Options)
+  @IsNotEmpty()
+  @ValidateNested({each: true})
+  options: Options[];
+}
+
+export class CreateQuizzesDTO {
+  @ApiProperty()
+  @Type(() => String)
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiProperty()
+  @Type(() => String)
+  @IsString()
+  @IsNotEmpty()
+  subject_id: string;
+
+  @ApiProperty({type: [Quetions]})
+  @Type(() => Quetions)
+  @IsNotEmpty()
+  @ValidateNested({each: true})
+  quetions: Quetions[];
+}
+
+export class UpdateQuizzesDTO {
+  @ApiProperty()
+  @Type(() => String)
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+}
+
+export class UpdateQuetionDTO {
+  @ApiPropertyOptional()
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  name: string;
+
+  @ApiPropertyOptional()
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  discuss: string;
+}
+
+export class UpdateOptionDTO {
+  @ApiPropertyOptional()
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  name: string;
+
+  @ApiPropertyOptional()
+  @Type(() => Boolean)
+  @IsBoolean()
+  @IsOptional()
+  is_correct: boolean;
 }

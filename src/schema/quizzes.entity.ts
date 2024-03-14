@@ -1,18 +1,16 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { Subjects } from './subjects.entity';
+import { Quetions } from './quetions.entity';
 
 const moment = require('moment');
 
 @Entity()
-export class Videos {
+export class Quizzes {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
   name: string;
-
-  @Column()
-  file_url: string;
 
   @Column()
   subject_id: string;
@@ -26,7 +24,10 @@ export class Videos {
   @Column({ nullable: true })
   deleted_at: Date;
 
-  @ManyToOne(() => Subjects, subject => subject.videos, { eager: true })
+  @ManyToOne(() => Subjects, subject => subject.quizzes, { eager: true })
   @JoinColumn({ name: 'subject_id' })
   subject: Subjects;
+  
+  @OneToMany(() => Quetions, question => question.quiz)
+  quetions: Quetions[];
 }
