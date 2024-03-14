@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -12,8 +12,8 @@ export class CreateRoleDTO {
 
 export class GetDetailDTO {
   @ApiProperty()
-  @Type(() => String)
-  @IsString()
+  @Type(() => Number)
+  @IsNumber()
   @IsNotEmpty()
-  id: string;
+  id: number;
 }

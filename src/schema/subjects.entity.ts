@@ -6,7 +6,7 @@ const moment = require('moment');
 
 @Entity()
 export class Subjects {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('increment')
   id: string;
 
   @Column()

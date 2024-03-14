@@ -5,8 +5,8 @@ const moment = require('moment');
 
 @Entity()
 export class Videos {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
   @Column()
   name: string;
@@ -15,7 +15,7 @@ export class Videos {
   file_url: string;
 
   @Column()
-  subject_id: string;
+  subject_id: number;
 
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;

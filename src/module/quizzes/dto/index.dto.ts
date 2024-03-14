@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -39,10 +39,10 @@ export class CreateSubjectDTO {
 
 export class ParamsId {
   @ApiProperty()
-  @Type(() => String)
-  @IsString()
+  @Type(() => Number)
+  @IsNumber()
   @IsNotEmpty()
-  id: string;
+  id: number;
 }
 
 export class UpdateSubjectDTO {
@@ -112,10 +112,10 @@ export class CreateQuizzesDTO {
   name: string;
 
   @ApiProperty()
-  @Type(() => String)
-  @IsString()
+  @Type(() => Number)
+  @IsNumber()
   @IsNotEmpty()
-  subject_id: string;
+  subject_id: number;
 
   @ApiProperty({type: [Quetions]})
   @Type(() => Quetions)
@@ -162,24 +162,24 @@ export class UpdateOptionDTO {
 
 class Answer {
   @ApiProperty()
-  @Type(() => String)
-  @IsString()
+  @Type(() => Number)
+  @IsNumber()
   @IsNotEmpty()
-  quetion_id: string;
+  quetion_id: number;
 
   @ApiProperty()
-  @Type(() => String)
-  @IsString()
+  @Type(() => Number)
+  @IsNumber()
   @IsNotEmpty()
-  option_id: string;
+  option_id: number;
 }
 
 export class CreateAnswerDTO {
   @ApiProperty()
-  @Type(() => String)
-  @IsString()
+  @Type(() => Number)
+  @IsNumber()
   @IsNotEmpty()
-  quiz_id: string;
+  quiz_id: number;
 
   @ApiProperty({type: [Answer]})
   @Type(() => Answer)

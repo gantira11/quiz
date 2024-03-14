@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -22,10 +22,10 @@ export class CreateUserDTO {
   password: string;
 
   @ApiProperty()
-  @Type(() => String)
-  @IsString()
+  @Type(() => Number)
+  @IsNumber()
   @IsNotEmpty()
-  role_id: string;
+  role_id: number;
 }
 
 export class UpdateUserDTO {
@@ -42,10 +42,10 @@ export class UpdateUserDTO {
   username: string;
 
   @ApiPropertyOptional()
-  @Type(() => String)
-  @IsString()
+  @Type(() => Number)
+  @IsNumber()
   @IsOptional()
-  role_id: string;
+  role_id: number;
 }
 
 export class LoginDTO {
@@ -64,8 +64,8 @@ export class LoginDTO {
 
 export class GetDetailUserDTO {
   @ApiProperty()
-  @Type(() => String)
-  @IsString()
+  @Type(() => Number)
+  @IsNumber()
   @IsNotEmpty()
-  id: string;
+  id: number;
 }

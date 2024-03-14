@@ -6,8 +6,8 @@ const moment = require('moment');
 
 @Entity()
 export class Users {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
   @Column()
   name: string;
@@ -19,7 +19,7 @@ export class Users {
   password: string;
 
   @Column()
-  role_id: string;
+  role_id: number;
 
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;

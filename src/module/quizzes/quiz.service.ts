@@ -131,7 +131,7 @@ export class QuizService {
     }
   }
 
-  async subjectDetail(id: string) {
+  async subjectDetail(id: number) {
     return await this.subjectsRepository
       .createQueryBuilder('sub')
       .leftJoinAndSelect('sub.videos', 'vid')
@@ -142,14 +142,14 @@ export class QuizService {
       .getOne()
   }
 
-  async videoDetail(id: string) {
+  async videoDetail(id: number) {
     return await this.videosRepository
       .createQueryBuilder('video')
       .where('video.id = :id', {id})
       .getOne()
   }
 
-  async subjectUpdate(id: string, body: UpdateSubjectPayload) {
+  async subjectUpdate(id: number, body: UpdateSubjectPayload) {
     try {
       let data = body
       data['updated_at'] = moment.utc().format('YYYY-MM-DD HH:mm:ss')
@@ -171,7 +171,7 @@ export class QuizService {
     }
   }
 
-  async videoUpdate(id: string, body: UpdateVideoPayload) {
+  async videoUpdate(id: number, body: UpdateVideoPayload) {
     try {
       let data = body
       data['updated_at'] = moment.utc().format('YYYY-MM-DD HH:mm:ss')
@@ -193,7 +193,7 @@ export class QuizService {
     }
   }
 
-  async subjectDelete(id: string) {
+  async subjectDelete(id: number) {
     try {
       const data = {
         deleted_at: moment.utc().format('YYYY-DD-MM HH:mm:ss')
@@ -266,7 +266,7 @@ export class QuizService {
     }
   }
 
-  async videoDelete(id: string) {
+  async videoDelete(id: number) {
     try {
       const data = {
         deleted_at: moment.utc().format('YYYY-DD-MM HH:mm:ss')
@@ -289,8 +289,6 @@ export class QuizService {
       let quetions = []
       let data = body
 
-      data.quetions['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
-      data.quetions['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
       quetions = data.quetions
       delete data.quetions
 
@@ -306,6 +304,8 @@ export class QuizService {
         for(let item of quetions) {
           let options = []
           item['quiz_id'] = quiz.id
+          item['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+          item['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
 
           options = item.options
           delete item.options
@@ -390,7 +390,7 @@ export class QuizService {
     }
   }
 
-  async quizDetail(id: string) {
+  async quizDetail(id: number) {
     return await this.quizzesRepository
       .createQueryBuilder('quiz')
       .leftJoinAndSelect('quiz.quetions', 'que')
@@ -399,7 +399,7 @@ export class QuizService {
       .getOne()
   }
 
-  async quizUpdate(id: string, body: UpdateQuizzessPayload) {
+  async quizUpdate(id: number, body: UpdateQuizzessPayload) {
     try {
       let data = body
       data['updated_at'] = moment.utc().format('YYYY-MM-DD HH:mm:ss')
@@ -415,7 +415,7 @@ export class QuizService {
     }
   }
 
-  async quizDelete(id: string) {
+  async quizDelete(id: number) {
     try {
       const data = {
         deleted_at: moment.utc().format('YYYY-DD-MM HH:mm:ss')
@@ -463,7 +463,7 @@ export class QuizService {
     }
   }
 
-  async quetionDetail(id: string) {
+  async quetionDetail(id: number) {
     return await this.quetionsRepository
       .createQueryBuilder('que')
       .leftJoinAndSelect('que.options', 'op')
@@ -471,7 +471,7 @@ export class QuizService {
       .getOne()
   }
 
-  async quetionUpdate(id: string, body: UpdateQuetionPayload) {
+  async quetionUpdate(id: number, body: UpdateQuetionPayload) {
     try {
       let data = body
       data['updated_at'] = moment.utc().format('YYYY-MM-DD HH:mm:ss')
@@ -487,7 +487,7 @@ export class QuizService {
     }
   }
 
-  async quetionDelete(id: string) {
+  async quetionDelete(id: number) {
     try {
       const data = {
         deleted_at: moment.utc().format('YYYY-DD-MM HH:mm:ss')
@@ -524,14 +524,14 @@ export class QuizService {
     }
   }
 
-  async optionDetail(id: string) {
+  async optionDetail(id: number) {
     return await this.optionsRepository
       .createQueryBuilder('op')
       .where('op.id = :id', {id})
       .getOne()
   }
 
-  async optionUpdate(id: string, body: UpdateOptionPayload) {
+  async optionUpdate(id: number, body: UpdateOptionPayload) {
     try {
       let data = body
       data['updated_at'] = moment.utc().format('YYYY-MM-DD HH:mm:ss')
@@ -547,7 +547,7 @@ export class QuizService {
     }
   }
 
-  async optionDelete(id: string) {
+  async optionDelete(id: number) {
     try {
       const data = {
         deleted_at: moment.utc().format('YYYY-DD-MM HH:mm:ss')
@@ -565,7 +565,7 @@ export class QuizService {
     }
   }
 
-  async answerCreate(user_id: string, body: CreateAnswerPayload) {
+  async answerCreate(user_id: number, body: CreateAnswerPayload) {
     try {
       let totalQuetion = 0
       let totalAnswer = 0
@@ -594,8 +594,7 @@ export class QuizService {
 
       totalQuetion = quizzes.quetions.length
 
-      const point = ( totalAnswer / totalQuetion ) * 100
-      data['point'] = !!!Number.isInteger(point) ? point.toFixed(2) : point
+      data['point'] = Math.round(( totalAnswer/totalQuetion) * 100)
       data['quetions'] = JSON.stringify(data.quetions)
 
       return await this.answersRepository.save(
@@ -664,7 +663,7 @@ export class QuizService {
     }
   }
 
-  async answerDetail(id: string) {
+  async answerDetail(id: number) {
     try {
       let result = {}
       let answer = await this.answersRepository
