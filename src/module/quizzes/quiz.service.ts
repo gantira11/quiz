@@ -131,7 +131,7 @@ export class QuizService {
     }
   }
 
-  async subjectDetail(id: number) {
+  async subjectDetail(id: string) {
     return await this.subjectsRepository
       .createQueryBuilder('sub')
       .leftJoinAndSelect('sub.videos', 'vid')
@@ -142,14 +142,14 @@ export class QuizService {
       .getOne()
   }
 
-  async videoDetail(id: number) {
+  async videoDetail(id: string) {
     return await this.videosRepository
       .createQueryBuilder('video')
       .where('video.id = :id', {id})
       .getOne()
   }
 
-  async subjectUpdate(id: number, body: UpdateSubjectPayload) {
+  async subjectUpdate(id: string, body: UpdateSubjectPayload) {
     try {
       let data = body
       data['updated_at'] = moment.utc().format('YYYY-MM-DD HH:mm:ss')
@@ -171,7 +171,7 @@ export class QuizService {
     }
   }
 
-  async videoUpdate(id: number, body: UpdateVideoPayload) {
+  async videoUpdate(id: string, body: UpdateVideoPayload) {
     try {
       let data = body
       data['updated_at'] = moment.utc().format('YYYY-MM-DD HH:mm:ss')
@@ -193,7 +193,7 @@ export class QuizService {
     }
   }
 
-  async subjectDelete(id: number) {
+  async subjectDelete(id: string) {
     try {
       const data = {
         deleted_at: moment.utc().format('YYYY-DD-MM HH:mm:ss')
@@ -266,7 +266,7 @@ export class QuizService {
     }
   }
 
-  async videoDelete(id: number) {
+  async videoDelete(id: string) {
     try {
       const data = {
         deleted_at: moment.utc().format('YYYY-DD-MM HH:mm:ss')
@@ -390,7 +390,7 @@ export class QuizService {
     }
   }
 
-  async quizDetail(id: number) {
+  async quizDetail(id: string) {
     return await this.quizzesRepository
       .createQueryBuilder('quiz')
       .leftJoinAndSelect('quiz.quetions', 'que')
@@ -399,7 +399,7 @@ export class QuizService {
       .getOne()
   }
 
-  async quizUpdate(id: number, body: UpdateQuizzessPayload) {
+  async quizUpdate(id: string, body: UpdateQuizzessPayload) {
     try {
       let data = body
       data['updated_at'] = moment.utc().format('YYYY-MM-DD HH:mm:ss')
@@ -415,7 +415,7 @@ export class QuizService {
     }
   }
 
-  async quizDelete(id: number) {
+  async quizDelete(id: string) {
     try {
       const data = {
         deleted_at: moment.utc().format('YYYY-DD-MM HH:mm:ss')
@@ -463,7 +463,7 @@ export class QuizService {
     }
   }
 
-  async quetionDetail(id: number) {
+  async quetionDetail(id: string) {
     return await this.quetionsRepository
       .createQueryBuilder('que')
       .leftJoinAndSelect('que.options', 'op')
@@ -471,7 +471,7 @@ export class QuizService {
       .getOne()
   }
 
-  async quetionUpdate(id: number, body: UpdateQuetionPayload) {
+  async quetionUpdate(id: string, body: UpdateQuetionPayload) {
     try {
       let data = body
       data['updated_at'] = moment.utc().format('YYYY-MM-DD HH:mm:ss')
@@ -487,7 +487,7 @@ export class QuizService {
     }
   }
 
-  async quetionDelete(id: number) {
+  async quetionDelete(id: string) {
     try {
       const data = {
         deleted_at: moment.utc().format('YYYY-DD-MM HH:mm:ss')
@@ -524,14 +524,14 @@ export class QuizService {
     }
   }
 
-  async optionDetail(id: number) {
+  async optionDetail(id: string) {
     return await this.optionsRepository
       .createQueryBuilder('op')
       .where('op.id = :id', {id})
       .getOne()
   }
 
-  async optionUpdate(id: number, body: UpdateOptionPayload) {
+  async optionUpdate(id: string, body: UpdateOptionPayload) {
     try {
       let data = body
       data['updated_at'] = moment.utc().format('YYYY-MM-DD HH:mm:ss')
@@ -547,7 +547,7 @@ export class QuizService {
     }
   }
 
-  async optionDelete(id: number) {
+  async optionDelete(id: string) {
     try {
       const data = {
         deleted_at: moment.utc().format('YYYY-DD-MM HH:mm:ss')
@@ -565,7 +565,7 @@ export class QuizService {
     }
   }
 
-  async answerCreate(user_id: number, body: CreateAnswerPayload) {
+  async answerCreate(user_id: string, body: CreateAnswerPayload) {
     try {
       let totalQuetion = 0
       let totalAnswer = 0
@@ -663,7 +663,7 @@ export class QuizService {
     }
   }
 
-  async answerDetail(id: number) {
+  async answerDetail(id: string) {
     try {
       let result = {}
       let answer = await this.answersRepository

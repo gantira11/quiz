@@ -32,7 +32,7 @@ interface Quetions {
 
 export interface CreateQuizzesPayload {
   name: string;
-  subject_id: number;
+  subject_id: string;
   quetions: Quetions[]
 }
 
@@ -51,11 +51,11 @@ export interface UpdateOptionPayload {
 }
 
 interface Answer {
-  quetion_id: number;
-  option_id: number;
+  quetion_id: string;
+  option_id: string;
 }
 
 export interface CreateAnswerPayload {
-  quiz_id: number;
+  quiz_id: string;
   quetions: Answer[];
 } 

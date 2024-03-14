@@ -80,14 +80,14 @@ export class RoleService {
     }
   }
 
-  async detail(id: number) {
+  async detail(id: string) {
     return await this.rolesRepository
       .createQueryBuilder('role')
       .where('role.id = :id', {id})
       .getOne()
   }
 
-  async update(id: number, body: RolePayload) {
+  async update(id: string, body: RolePayload) {
     try {
       let data = body
       data['updated_at'] = moment.utc().format('YYYY-MM-DD HH:mm:ss')
@@ -110,7 +110,7 @@ export class RoleService {
     }
   }
 
-  async delete(id: number) {
+  async delete(id: string) {
     try {
       const data = {
         deleted_at: moment.utc().format('YYYY-DD-MM HH:mm:ss')

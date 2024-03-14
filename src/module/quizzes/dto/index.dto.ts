@@ -39,10 +39,10 @@ export class CreateSubjectDTO {
 
 export class ParamsId {
   @ApiProperty()
-  @Type(() => Number)
-  @IsNumber()
+  @Type(() => String)
+  @IsString()
   @IsNotEmpty()
-  id: number;
+  id: string;
 }
 
 export class UpdateSubjectDTO {
@@ -112,10 +112,10 @@ export class CreateQuizzesDTO {
   name: string;
 
   @ApiProperty()
-  @Type(() => Number)
-  @IsNumber()
+  @Type(() => String)
+  @IsString()
   @IsNotEmpty()
-  subject_id: number;
+  subject_id: string;
 
   @ApiProperty({type: [Quetions]})
   @Type(() => Quetions)
@@ -162,24 +162,24 @@ export class UpdateOptionDTO {
 
 class Answer {
   @ApiProperty()
-  @Type(() => Number)
-  @IsNumber()
+  @Type(() => String)
+  @IsString()
   @IsNotEmpty()
-  quetion_id: number;
+  quetion_id: string;
 
   @ApiProperty()
-  @Type(() => Number)
-  @IsNumber()
+  @Type(() => String)
+  @IsString()
   @IsNotEmpty()
-  option_id: number;
+  option_id: string;
 }
 
 export class CreateAnswerDTO {
   @ApiProperty()
-  @Type(() => Number)
-  @IsNumber()
+  @Type(() => String)
+  @IsString()
   @IsNotEmpty()
-  quiz_id: number;
+  quiz_id: string;
 
   @ApiProperty({type: [Answer]})
   @Type(() => Answer)

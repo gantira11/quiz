@@ -5,8 +5,8 @@ const moment = require('moment');
 
 @Entity()
 export class Roles {
-  @PrimaryGeneratedColumn('increment')
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   name: string;

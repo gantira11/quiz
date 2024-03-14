@@ -5,8 +5,8 @@ const moment = require('moment');
 
 @Entity()
 export class Options {
-  @PrimaryGeneratedColumn('increment')
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   name: string;
@@ -15,7 +15,7 @@ export class Options {
   is_correct: boolean;
 
   @Column()
-  quetion_id: number;
+  quetion_id: string;
 
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;

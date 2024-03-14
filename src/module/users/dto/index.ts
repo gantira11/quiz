@@ -22,10 +22,10 @@ export class CreateUserDTO {
   password: string;
 
   @ApiProperty()
-  @Type(() => Number)
-  @IsNumber()
+  @Type(() => String)
+  @IsString()
   @IsNotEmpty()
-  role_id: number;
+  role_id: string;
 }
 
 export class UpdateUserDTO {
@@ -41,11 +41,11 @@ export class UpdateUserDTO {
   @IsOptional()
   username: string;
 
-  @ApiPropertyOptional()
-  @Type(() => Number)
-  @IsNumber()
-  @IsOptional()
-  role_id: number;
+  @ApiProperty()
+  @Type(() => String)
+  @IsString()
+  @IsNotEmpty()
+  role_id: string;
 }
 
 export class LoginDTO {
@@ -65,7 +65,7 @@ export class LoginDTO {
 export class GetDetailUserDTO {
   @ApiProperty()
   @Type(() => Number)
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  id: number;
+  id: string;
 }

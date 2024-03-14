@@ -12,8 +12,8 @@ export class CreateRoleDTO {
 
 export class GetDetailDTO {
   @ApiProperty()
-  @Type(() => Number)
-  @IsNumber()
+  @Type(() => String)
+  @IsString()
   @IsNotEmpty()
-  id: number;
+  id: string;
 }

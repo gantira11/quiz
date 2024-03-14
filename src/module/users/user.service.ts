@@ -120,7 +120,7 @@ export class UserService {
     }
   }
 
-  async detail(id: number) {
+  async detail(id: string) {
     return await this.usersRepository
       .createQueryBuilder('usr')
       .leftJoinAndSelect('usr.role', 'role')
@@ -128,7 +128,7 @@ export class UserService {
       .getOne()
   }
 
-  async update(id: number, body: UpdateUserPayload) {
+  async update(id: string, body: UpdateUserPayload) {
     try {
       let data = body
       data['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
@@ -152,7 +152,7 @@ export class UserService {
     }
   }
 
-  async delete(id: number) {
+  async delete(id: string) {
     try {
       const data = {
         deleted_at: moment.utc().format('YYYY-DD-MM HH:mm:ss')

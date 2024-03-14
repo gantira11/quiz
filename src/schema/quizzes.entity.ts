@@ -7,14 +7,14 @@ const moment = require('moment');
 
 @Entity()
 export class Quizzes {
-  @PrimaryGeneratedColumn('increment')
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   name: string;
 
   @Column()
-  subject_id: number;
+  subject_id: string;
 
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;

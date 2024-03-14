@@ -3,7 +3,7 @@ CREATE DATABASE quiz;
 
 -- Tabel roles
 CREATE TABLE roles (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     name VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT NULL,
     updated_at TIMESTAMP DEFAULT NULL,
@@ -12,11 +12,11 @@ CREATE TABLE roles (
 
 -- Tabel users
 CREATE TABLE users (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     name VARCHAR(255) NOT NULL,
     username VARCHAR(100) NOT NULL,
     password VARCHAR(100) NOT NULL,
-    role_id BIGINT,
+    role_id CHAR(36),
     FOREIGN KEY (role_id) REFERENCES roles(id),
     created_at TIMESTAMP DEFAULT NULL,
     updated_at TIMESTAMP DEFAULT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE users (
 
 -- Tabel subjects
 CREATE TABLE subjects (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     name VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT NULL,
@@ -35,10 +35,10 @@ CREATE TABLE subjects (
 
 -- Tabel videos
 CREATE TABLE videos (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     name VARCHAR(255) NOT NULL,
     file_url VARCHAR(255) NOT NULL,
-    subject_id BIGINT,
+    subject_id CHAR(36),
     FOREIGN KEY (subject_id) REFERENCES subjects(id),
     created_at TIMESTAMP DEFAULT NULL,
     updated_at TIMESTAMP DEFAULT NULL,
@@ -47,9 +47,9 @@ CREATE TABLE videos (
 
 -- Tabel quizzes
 CREATE TABLE quizzes (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     name VARCHAR(255) NOT NULL,
-    subject_id BIGINT,
+    subject_id CHAR(36),
     FOREIGN KEY (subject_id) REFERENCES subjects(id),
     created_at TIMESTAMP DEFAULT NULL,
     updated_at TIMESTAMP DEFAULT NULL,
@@ -58,10 +58,10 @@ CREATE TABLE quizzes (
 
 -- Tabel questions
 CREATE TABLE quetions (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     name VARCHAR(255) NOT NULL,
     discuss TEXT DEFAULT NULL,
-    quiz_id BIGINT,
+    quiz_id CHAR(36),
     FOREIGN KEY (quiz_id) REFERENCES quizzes(id),
     created_at TIMESTAMP DEFAULT NULL,
     updated_at TIMESTAMP DEFAULT NULL,
@@ -70,10 +70,10 @@ CREATE TABLE quetions (
 
 -- Tabel options
 CREATE TABLE options (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     name VARCHAR(255) NOT NULL,
     is_correct BOOLEAN NOT NULL DEFAULT FALSE,
-    quetion_id BIGINT,
+    quetion_id CHAR(36),
     FOREIGN KEY (quetion_id) REFERENCES quetions(id),
     created_at TIMESTAMP DEFAULT NULL,
     updated_at TIMESTAMP DEFAULT NULL,
@@ -82,12 +82,12 @@ CREATE TABLE options (
 
 -- Tabel answers
 CREATE TABLE answers (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     quetions TEXT NOT NULL,
     point DOUBLE NOT NULL,
-    quiz_id BIGINT,
+    quiz_id CHAR(36),
     FOREIGN KEY (quiz_id) REFERENCES quizzes(id),
-    user_id BIGINT,
+    user_id CHAR(36),
     FOREIGN KEY (user_id) REFERENCES users(id),
     created_at TIMESTAMP DEFAULT NULL,
     updated_at TIMESTAMP DEFAULT NULL,
