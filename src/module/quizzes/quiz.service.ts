@@ -45,14 +45,57 @@ export class QuizService {
 
   async dashboard() {
     try {
+      const rolesCurrent = await this.rolesRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
+      const rolesDeleted = await this.rolesRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
+      const usersCurrent = await this.usersRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
+      const usersDeleted = await this.usersRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
+      const subjectsCurrent = await this.subjectsRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
+      const subjectsDeleted = await this.subjectsRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
+      const quizzesCurrent = await this.quizzesRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
+      const quizzesDeleted = await this.quizzesRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
+      const quetionsCurrent = await this.quetionsRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
+      const quetionsDeleted = await this.quetionsRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
+      const optionsCurrent = await this.optionsRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
+      const optionsDeleted = await this.optionsRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
+      const answersCurrent = await this.answersRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
+      const answersDeleted = await this.answersRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
+
       return {
-        roles: await this.rolesRepository.count(),
-        users: await this.usersRepository.count(),
-        subjects: await this.subjectsRepository.count(),
-        quizzes: await this.quizzesRepository.count(),
-        quetions: await this.quetionsRepository.count(),
-        options: await this.optionsRepository.count(),
-        answers: await this.answersRepository.count(),
+        roles: {
+          current: rolesCurrent,
+          deleted: rolesDeleted,
+          total: rolesCurrent + rolesDeleted
+        },
+        users: {
+          current: usersCurrent,
+          deleted: usersDeleted,
+          total: usersCurrent + usersDeleted
+        },
+        subjects: {
+          current: subjectsCurrent,
+          deleted: subjectsDeleted,
+          total: subjectsCurrent + subjectsDeleted
+        },
+        quizzes: {
+          current: quizzesCurrent,
+          deleted: quizzesDeleted,
+          total: quizzesCurrent + quizzesDeleted
+        },
+        quetions: {
+          current: quetionsCurrent,
+          deleted: quetionsDeleted,
+          total: quetionsCurrent + quetionsDeleted
+        },
+        options: {
+          current: optionsCurrent,
+          deleted: optionsDeleted,
+          total: optionsCurrent + optionsDeleted
+        },
+        answers: {
+          current: answersCurrent,
+          deleted: answersDeleted,
+          total: answersCurrent + answersDeleted
+        },
       }
     } catch (err) {
       throw new HttpException(err.message, err.code)
