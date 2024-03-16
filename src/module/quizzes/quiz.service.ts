@@ -392,7 +392,7 @@ export class QuizService {
       };
 
       let result = {
-        subjects: count > 0 ? report : [],
+        quizzes: count > 0 ? report : [],
         paginator: paginator
       }
 
@@ -667,7 +667,7 @@ export class QuizService {
       };
 
       let result = {
-        subjects: count > 0 ? report : [],
+        answers: count > 0 ? report : [],
         paginator: paginator
       }
 
