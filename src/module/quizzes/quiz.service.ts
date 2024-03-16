@@ -86,7 +86,9 @@ export class QuizService {
 
       let query = await this.subjectsRepository
         .createQueryBuilder('sub')
+        .leftJoinAndSelect('sub.quizzes', 'quiz')
         .where('sub.deleted_at is null')
+        .andWhere('quiz.deleted_at is null')
 
       if(!!params.keyword) {
         query.andWhere('sub.name like :name', {name: `%${params.keyword}%`})
@@ -105,6 +107,13 @@ export class QuizService {
         .take(limit)
         .skip(offset)
         .getMany();
+
+      if(report.length > 0) {
+        for(let data of report) {
+          data['total_quiz'] = data.quizzes.length
+          delete data.quizzes
+        }
+      }
 
       const slNo = page == 1 ? 0 : (page - 1) * limit - 1
 
@@ -357,7 +366,9 @@ export class QuizService {
 
       let query = await this.quizzesRepository
         .createQueryBuilder('quiz')
+        .leftJoinAndSelect('quiz.quetions', 'quetion')
         .where('quiz.deleted_at is null')
+        .andWhere('quetion.deleted_at is null')
 
       if(!!params.keyword) {
         query.andWhere('quiz.name like :name', {name: `%${params.keyword}%`})
@@ -376,6 +387,13 @@ export class QuizService {
         .take(limit)
         .skip(offset)
         .getMany();
+
+      if(report.length > 0) {
+        for(let data of report) {
+          data['total_quetions'] = data.quetions.length
+          delete data.quetions
+        }
+      }
 
       const slNo = page == 1 ? 0 : (page - 1) * limit - 1
 
