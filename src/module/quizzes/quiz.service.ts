@@ -17,12 +17,18 @@ import { Quizzes } from 'src/schema/quizzes.entity';
 import { Quetions } from 'src/schema/quetions.entity';
 import { Options } from 'src/schema/options.entity';
 import { Answers } from 'src/schema/answers.entity';
+import { Users } from 'src/schema/users.entity';
+import { Roles } from 'src/schema/roles.entity';
 
 const moment = require('moment');
 
 @Injectable()
 export class QuizService {
   constructor(
+    @InjectRepository(Roles)
+    private rolesRepository: Repository<Roles>,
+    @InjectRepository(Users)
+    private usersRepository: Repository<Users>,
     @InjectRepository(Subjects)
     private subjectsRepository: Repository<Subjects>,
     @InjectRepository(Videos)
@@ -36,6 +42,22 @@ export class QuizService {
     @InjectRepository(Answers)
     private answersRepository: Repository<Answers>,
   ) {}
+
+  async dashboard() {
+    try {
+      return {
+        roles: await this.rolesRepository.count(),
+        users: await this.usersRepository.count(),
+        subjects: await this.subjectsRepository.count(),
+        quizzes: await this.quizzesRepository.count(),
+        quetions: await this.quetionsRepository.count(),
+        options: await this.optionsRepository.count(),
+        answers: await this.answersRepository.count(),
+      }
+    } catch (err) {
+      throw new HttpException(err.message, err.code)
+    }
+  }
 
   async subjectCreate(body: CreateSubjectPayload) {
     let result: any

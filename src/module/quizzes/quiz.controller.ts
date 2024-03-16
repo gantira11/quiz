@@ -33,6 +33,30 @@ export class QuizController {
     private readonly quizService: QuizService
   ) {}
 
+  @Get('/dashboard')
+  @ApiOperation({ summary: 'Get Dashboard' })
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(ValidationPipe)
+  async dashboard(@AuthUser() auth_user, @Res() res) {
+    let response = {}, statusCode = 500
+    try {
+      if(auth_user.role.name !== 'admin') throw new HttpException('Access Not Allowed', HttpStatus.BAD_REQUEST)
+      const process = await this.quizService.dashboard()
+
+      if(!process) {
+        response = responseError(statusCode, 'Internal Server Error')
+      } else {
+        statusCode = HttpStatus.OK;
+        response = responseSuccess(statusCode, 'Success', process)
+      }
+
+      res.status(statusCode).json(response);
+    } catch (error) {
+      response = responseError(statusCode, error)
+      res.status(statusCode).json(response)
+    }
+  }
+
   @Post('/create-subject')
   @ApiOperation({ summary: 'Create Subject' })
   @UseGuards(JwtAuthGuard)
