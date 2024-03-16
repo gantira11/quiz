@@ -212,8 +212,14 @@ export class QuizService {
 
       if(!subject) throw new HttpException('Subject is not found.', HttpStatus.NOT_FOUND)
 
+      let videosIds = []
       let quizIds = []
       let quetionIds = []
+
+      videosIds = subject.videos.map((e) => {
+        return e.id
+      })
+
       quizIds = subject.quizzes.map((e) => {
         quetionIds = e.quetions.map((e) => {
           return e.id
@@ -229,33 +235,39 @@ export class QuizService {
         .where('id = :id', {id})
         .execute()
         .then(async (res) => {
-          await this.videosRepository
-            .createQueryBuilder()
-            .update(Videos)
-            .set(data)
-            .where('subject_id = :id', {id})
-            .execute()
+          if(videosIds.length > 0) {
+            await this.videosRepository
+              .createQueryBuilder()
+              .update(Videos)
+              .set(data)
+              .where('subject_id = :id', {id})
+              .execute()
+          }
 
-          await this.quizzesRepository
-            .createQueryBuilder()
-            .update(Quizzes)
-            .set(data)
-            .where('subject_id = :id', {id})
-            .execute()
+          if(quizIds.length > 0) {
+            await this.quizzesRepository
+              .createQueryBuilder()
+              .update(Quizzes)
+              .set(data)
+              .where('subject_id = :id', {id})
+              .execute()
 
-          await this.quetionsRepository
-            .createQueryBuilder()
-            .update(Quetions)
-            .set(data)
-            .where('quiz_id IN (:...id)', {id: quizIds})
-            .execute()
+            if(quetionIds.length > 0) {
+              await this.quetionsRepository
+                .createQueryBuilder()
+                .update(Quetions)
+                .set(data)
+                .where('quiz_id IN (:...id)', {id: quizIds})
+                .execute()
 
-          await this.optionsRepository
-            .createQueryBuilder()
-            .update(Options)
-            .set(data)
-            .where('quetion_id IN (:...id)', {id: quetionIds})
-            .execute()
+              await this.optionsRepository
+                .createQueryBuilder()
+                .update(Options)
+                .set(data)
+                .where('quetion_id IN (:...id)', {id: quetionIds})
+                .execute()
+            }
+          }
 
           return res
         })
@@ -440,19 +452,21 @@ export class QuizService {
         .where('id = :id', {id})
         .execute()
         .then(async (res) => {
-          await this.quetionsRepository
-            .createQueryBuilder()
-            .update(Quetions)
-            .set(data)
-            .where('quiz_id = :id', {id})
-            .execute()
-
-          await this.optionsRepository
-            .createQueryBuilder()
-            .update(Options)
-            .set(data)
-            .where('quetion_id IN (:...id)', {id: quetionIds})
-            .execute()
+          if(quetionIds.length > 0) {
+            await this.quetionsRepository
+              .createQueryBuilder()
+              .update(Quetions)
+              .set(data)
+              .where('quiz_id = :id', {id})
+              .execute()
+  
+            await this.optionsRepository
+              .createQueryBuilder()
+              .update(Options)
+              .set(data)
+              .where('quetion_id IN (:...id)', {id: quetionIds})
+              .execute()
+          }
 
           return res
         })
