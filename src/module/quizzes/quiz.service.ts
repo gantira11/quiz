@@ -307,6 +307,16 @@ export class QuizService {
 
   async quizCreate(body: CreateQuizzesPayload) {
     try {
+      console.log(body)
+
+      for(const item of body.quetions) {
+        const isCorrect = item.options.filter((correct) => !!correct.is_correct).length
+
+        if(isCorrect > 1) {
+          throw new HttpException('Is correct option cannot be more than 1', HttpStatus.UNPROCESSABLE_ENTITY)
+        }
+      }
+
       let quetions = []
       let data = body
 
