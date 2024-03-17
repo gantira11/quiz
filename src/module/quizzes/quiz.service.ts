@@ -253,14 +253,12 @@ export class QuizService {
       data['updated_at'] = moment.utc().format('YYYY-MM-DD HH:mm:ss')
 
       if(!!data.videos ) {
-        videos = videos.map((item) => {
+        videos = data.videos.map((item) => {
           item['subject_id'] = id
           item['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
           item['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
           return item
         })
-
-        delete data.videos
 
         await this.videosRepository
           .createQueryBuilder()
@@ -268,6 +266,8 @@ export class QuizService {
           .into(Videos)
           .values(videos)
           .execute()
+
+        delete data.videos
       }
 
       if(!!data.quizzes ) {
