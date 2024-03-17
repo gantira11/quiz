@@ -206,14 +206,33 @@ export class QuizService {
   }
 
   async subjectDetail(id: string) {
-    return await this.subjectsRepository
+    const subject = await this.subjectsRepository
       .createQueryBuilder('sub')
       .leftJoinAndSelect('sub.videos', 'vid')
       .leftJoinAndSelect('sub.quizzes', 'q')
       .where('sub.id = :id', {id})
-      .andWhere('vid.deleted_at is null')
       .andWhere('q.deleted_at is null')
       .getOne()
+
+      const hasVideos = subject &&
+        subject.videos &&
+        subject.videos.length > 0 &&
+        subject.videos.filter((element) => !element.deleted_at).length < 0
+
+      const hasQuizzes = subject &&
+        subject.quizzes &&
+        subject.quizzes.length > 0 &&
+        subject.quizzes.filter((element) => !element.deleted_at).length < 0
+
+      if (hasVideos && hasQuizzes) {
+        return subject;
+      } else if(!hasVideos) {
+        return { ...subject, videos: [] };
+      } else if(!hasQuizzes) {
+        return { ...subject, quizzes: [] };
+      } else {
+        return { ...subject, videos: [], quizzes: [] };
+      }
   }
 
   async videoDetail(id: string) {
@@ -496,12 +515,28 @@ export class QuizService {
   }
 
   async quizDetail(id: string) {
-    return await this.quizzesRepository
+    let quiz = await this.quizzesRepository
       .createQueryBuilder('quiz')
       .leftJoinAndSelect('quiz.quetions', 'que')
       .leftJoinAndSelect('que.options', 'op')
       .where('quiz.id = :id', {id})
       .getOne()
+
+      const hasQuetions = quiz &&
+        quiz.quetions &&
+        quiz.quetions.length > 0 &&
+        quiz.quetions.filter((element) => !element.deleted_at).length < 0
+
+      if(hasQuetions) {
+        quiz.quetions.map((element) => {
+          element.options.map((element) => {
+            if(!element.deleted_at) return element
+          })
+        })
+        return quiz
+      } else {
+        return {...quiz, quetions: []}
+      }
   }
 
   async quizUpdate(id: string, body: UpdateQuizzessPayload) {
@@ -576,6 +611,17 @@ export class QuizService {
       .leftJoinAndSelect('que.options', 'op')
       .where('que.id = :id', {id})
       .getOne()
+      .then((response) => {
+        const hasOptions = response.options &&
+          response.options.length > 0 &&
+          response.options.filter((element) => !element.deleted_at).length < 0
+
+        if(hasOptions) {
+          return response
+        } else {
+          return {...response, options: []}
+        }
+      })
   }
 
   async quetionUpdate(id: string, body: UpdateQuetionPayload) {
