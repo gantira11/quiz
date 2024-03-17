@@ -206,7 +206,7 @@ export class QuizService {
   }
 
   async subjectDetail(id: string) {
-    const subject = await this.subjectsRepository
+    let subject = await this.subjectsRepository
       .createQueryBuilder('sub')
       .leftJoinAndSelect('sub.videos', 'vid')
       .leftJoinAndSelect('sub.quizzes', 'q')
@@ -214,25 +214,29 @@ export class QuizService {
       .andWhere('q.deleted_at is null')
       .getOne()
 
-      const hasVideos = subject &&
-        subject.videos &&
-        subject.videos.length > 0 &&
-        subject.videos.filter((element) => !element.deleted_at).length < 0
+      if(subject && subject.videos) {
+        let videos = []
+        for(let item of subject.videos) {
+          if(!item.deleted_at) {
+            videos.push(item)
+          }
+        }
 
-      const hasQuizzes = subject &&
-        subject.quizzes &&
-        subject.quizzes.length > 0 &&
-        subject.quizzes.filter((element) => !element.deleted_at).length < 0
-
-      if (hasVideos && hasQuizzes) {
-        return subject;
-      } else if(!hasVideos) {
-        return { ...subject, videos: [] };
-      } else if(!hasQuizzes) {
-        return { ...subject, quizzes: [] };
-      } else {
-        return { ...subject, videos: [], quizzes: [] };
+        subject.videos = videos
       }
+
+      if(subject && subject.quizzes) {
+        let quizzes = []
+        for(let item of subject.quizzes) {
+          if(!item.deleted_at) {
+            quizzes.push(item)
+          }
+        }
+
+        subject.quizzes = quizzes
+      }
+      
+      return subject
   }
 
   async videoDetail(id: string) {
@@ -244,8 +248,79 @@ export class QuizService {
 
   async subjectUpdate(id: string, body: UpdateSubjectPayload) {
     try {
+      let videos = []
       let data = body
       data['updated_at'] = moment.utc().format('YYYY-MM-DD HH:mm:ss')
+
+      if(!!data.videos ) {
+        videos = videos.map((item) => {
+          item['subject_id'] = id
+          item['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+          item['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+          return item
+        })
+
+        delete data.videos
+
+        await this.videosRepository
+          .createQueryBuilder()
+          .insert()
+          .into(Videos)
+          .values(videos)
+          .execute()
+      }
+
+      if(!!data.quizzes ) {
+        for(let item of data.quizzes) {
+          for(const que of item.quetions) {
+            const isCorrect = que.options.filter((correct) => !!correct.is_correct).length
+    
+            if(isCorrect > 1) {
+              throw new HttpException('Is correct option cannot be more than 1', HttpStatus.UNPROCESSABLE_ENTITY)
+            }
+          }
+
+          item['subject_id'] = id
+          item['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+          item['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+
+          await this.quizzesRepository
+            .createQueryBuilder()
+            .insert()
+            .into(Quizzes)
+            .values(item)
+            .execute()
+            .then(async (quizResponse) => {
+              for(let quetion of item.quetions) {
+                quetion['quiz_id'] = quizResponse['id']
+                quetion['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+                quetion['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+                await this.quetionsRepository
+                  .createQueryBuilder()
+                  .insert()
+                  .into(Quetions)
+                  .values(quetion)
+                  .execute()
+                  .then(async (quetionResponse) => {
+                    for(let option of quetion.options) {
+                      option['quetion_id'] = quetionResponse['id']
+                      option['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+                      option['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+                      await this.optionsRepository
+                        .createQueryBuilder()
+                        .insert()
+                        .into(Options)
+                        .values(option)
+                        .execute()
+                    }
+                  })
+              }
+            })
+        }
+
+        delete data.quizzes
+
+      }
 
       return await this.subjectsRepository
         .createQueryBuilder()
@@ -522,29 +597,64 @@ export class QuizService {
       .where('quiz.id = :id', {id})
       .getOne()
 
-      const hasQuetions = quiz &&
-        quiz.quetions &&
-        quiz.quetions.length > 0 &&
-        quiz.quetions.filter((element) => !element.deleted_at).length < 0
+      if(quiz && quiz.quetions.length > 0) {
+        let quizQuetion = []
+        for(let data of quiz.quetions) {
+          let quetions
+          if(!data.deleted_at) {
+            quetions = {...data, options: []}
+            for(let item of data.options) {
+              if(!item.deleted_at) {
+                quetions.options.push(item)
+              }
+            }
+          }
 
-      if(hasQuetions) {
-        quiz.quetions.map((element) => {
-          element.options.map((element) => {
-            if(!element.deleted_at) return element
-          })
-        })
-        return quiz
-      } else {
-        return {...quiz, quetions: []}
+          quizQuetion.push(quetions)
+        }
+
+        quiz.quetions = quizQuetion
       }
+
+      return quiz
   }
 
   async quizUpdate(id: string, body: UpdateQuizzessPayload) {
     try {
       let data = body
       data['updated_at'] = moment.utc().format('YYYY-MM-DD HH:mm:ss')
-  
-      return await this.quetionsRepository
+
+      if(!!data.quetions) {
+        for(let quetion of data.quetions) {
+          quetion['quiz_id'] = id
+          quetion['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+          quetion['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+          await this.quetionsRepository
+            .createQueryBuilder()
+            .insert()
+            .into(Quetions)
+            .values(quetion)
+            .execute()
+            .then(async (quetionResponse) => {
+              for(let option of quetion.options) {
+                option['quetion_id'] = quetionResponse['id']
+                option['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+                option['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+                await this.optionsRepository
+                  .createQueryBuilder()
+                  .insert()
+                  .into(Options)
+                  .values(option)
+                  .execute()
+              }
+            })
+        }
+
+        delete data.quetions
+
+      }
+
+      return await this.quizzesRepository
         .createQueryBuilder()
         .update(Quizzes)
         .set(data)
@@ -606,29 +716,45 @@ export class QuizService {
   }
 
   async quetionDetail(id: string) {
-    return await this.quetionsRepository
+    let quetions = await this.quetionsRepository
       .createQueryBuilder('que')
       .leftJoinAndSelect('que.options', 'op')
       .where('que.id = :id', {id})
       .getOne()
-      .then((response) => {
-        const hasOptions = response.options &&
-          response.options.length > 0 &&
-          response.options.filter((element) => !element.deleted_at).length < 0
 
-        if(hasOptions) {
-          return response
-        } else {
-          return {...response, options: []}
+    if(quetions && quetions.options.length > 0) {
+      let options = []
+      for(let item of quetions.options) {
+        if(!item.deleted_at) {
+          options.push(item)
         }
-      })
+      }
+
+      quetions.options = options
+    }
+
+    return quetions
   }
 
   async quetionUpdate(id: string, body: UpdateQuetionPayload) {
     try {
       let data = body
       data['updated_at'] = moment.utc().format('YYYY-MM-DD HH:mm:ss')
-  
+
+      if(!!data.options) {
+        for(let item of data.options) {
+          item['quetion_id'] = id
+          item['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+          item['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+          await this.optionsRepository
+            .createQueryBuilder()
+            .insert()
+            .into(Options)
+            .values(item)
+            .execute()
+        }
+      }
+
       return await this.quetionsRepository
         .createQueryBuilder()
         .update(Quetions)

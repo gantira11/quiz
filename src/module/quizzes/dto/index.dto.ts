@@ -45,20 +45,6 @@ export class ParamsId {
   id: string;
 }
 
-export class UpdateSubjectDTO {
-  @ApiProperty()
-  @Type(() => String)
-  @IsString()
-  @IsOptional()
-  name: string;
-
-  @ApiProperty()
-  @Type(() => String)
-  @IsString()
-  @IsOptional()
-  content: string;
-}
-
 export class UpdateVideosDTO {
   @ApiProperty()
   @Type(() => String)
@@ -125,11 +111,17 @@ export class CreateQuizzesDTO {
 }
 
 export class UpdateQuizzesDTO {
-  @ApiProperty()
+  @ApiPropertyOptional()
   @Type(() => String)
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   name: string;
+
+  @ApiProperty({type: [Quetions]})
+  @Type(() => Quetions)
+  @IsNotEmpty()
+  @ValidateNested({each: true})
+  quetions: Quetions[];
 }
 
 export class UpdateQuetionDTO {
@@ -144,6 +136,40 @@ export class UpdateQuetionDTO {
   @IsString()
   @IsOptional()
   discuss: string;
+
+  @ApiProperty({type: [Options]})
+  @Type(() => Options)
+  @IsNotEmpty()
+  @ValidateNested({each: true})
+  options: Options[];
+}
+
+export class UpdateSubjectDTO {
+  @ApiPropertyOptional()
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  name: string;
+
+  @ApiPropertyOptional()
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  content: string;
+
+  @ApiPropertyOptional({type: [Videos]})
+  @Type(() => Videos)
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({each: true})
+  videos: Videos[]
+
+  @ApiPropertyOptional({type: [UpdateQuizzesDTO]})
+  @Type(() => UpdateQuizzesDTO)
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({each: true})
+  quizzes: UpdateQuizzesDTO[]
 }
 
 export class UpdateOptionDTO {

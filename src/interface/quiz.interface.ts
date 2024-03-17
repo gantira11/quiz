@@ -12,6 +12,8 @@ export interface CreateSubjectPayload {
 export interface UpdateSubjectPayload {
   name?: string;
   content?: string;
+  videos?: Videos[],
+  quizzes?: UpdateQuizzessPayload[]
 }
 
 export interface UpdateVideoPayload {
@@ -37,12 +39,14 @@ export interface CreateQuizzesPayload {
 }
 
 export interface UpdateQuizzessPayload {
-  name: string;
+  name?: string;
+  quetions?: Quetions[]
 }
 
 export interface UpdateQuetionPayload {
   name?: string;
   discuss?: string;
+  options?: Options[]
 }
 
 export interface UpdateOptionPayload {
