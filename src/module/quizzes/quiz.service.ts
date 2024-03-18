@@ -608,9 +608,8 @@ export class QuizService {
                 quetions.options.push(item)
               }
             }
+            quizQuetion.push(quetions)
           }
-
-          quizQuetion.push(quetions)
         }
 
         quiz.quetions = quizQuetion
@@ -828,7 +827,7 @@ export class QuizService {
             .createQueryBuilder()
             .update(Options)
             .set(data)
-            .where('quetion_id :id', {id})
+            .where('quetion_id IN (:...id)', {id: [id]})
             .execute()
 
           return res
