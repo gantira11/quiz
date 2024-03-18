@@ -211,7 +211,6 @@ export class QuizService {
       .leftJoinAndSelect('sub.videos', 'vid')
       .leftJoinAndSelect('sub.quizzes', 'q')
       .where('sub.id = :id', {id})
-      .andWhere('q.deleted_at is null')
       .getOne()
 
       if(subject && subject.videos) {
