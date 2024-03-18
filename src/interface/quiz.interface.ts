@@ -26,10 +26,23 @@ interface Options {
   is_correct: boolean;
 }
 
+interface OptionsUpdate {
+  id?: string;
+  name?: string;
+  is_correct?: boolean;
+}
+
 interface Quetions {
   name: string;
   discuss: string;
   options: Options[]
+}
+
+interface QuetionsUpdate {
+  id?: string;
+  name?: string;
+  discuss?: string;
+  options?: OptionsUpdate[]
 }
 
 export interface CreateQuizzesPayload {
@@ -40,13 +53,13 @@ export interface CreateQuizzesPayload {
 
 export interface UpdateQuizzessPayload {
   name?: string;
-  quetions?: Quetions[]
+  quetions?: QuetionsUpdate[]
 }
 
 export interface UpdateQuetionPayload {
   name?: string;
   discuss?: string;
-  options?: Options[]
+  options?: QuetionsUpdate[]
 }
 
 export interface UpdateOptionPayload {

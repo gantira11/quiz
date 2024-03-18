@@ -626,28 +626,65 @@ export class QuizService {
 
       if(!!data.quetions) {
         for(let quetion of data.quetions) {
-          quetion['quiz_id'] = id
-          quetion['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+          const optionsData = quetion.options
+          delete quetion.options
+
           quetion['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
-          await this.quetionsRepository
-            .createQueryBuilder()
-            .insert()
-            .into(Quetions)
-            .values(quetion)
-            .execute()
-            .then(async (quetionResponse) => {
-              for(let option of quetion.options) {
-                option['quetion_id'] = quetionResponse['id']
-                option['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+
+          if(!!quetion.id) {
+            const quetionId = quetion.id
+            delete quetion.id
+
+            await this.quetionsRepository
+              .createQueryBuilder()
+              .update(Quetions)
+              .set(quetion)
+              .where('id = :id', {id: quetion.id})
+              .execute()
+
+              for(let option of optionsData) {
                 option['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
-                await this.optionsRepository
-                  .createQueryBuilder()
-                  .insert()
-                  .into(Options)
-                  .values(option)
-                  .execute()
+                if(!!option.id) {
+                  const optionId = option.id
+                  delete option.id
+
+                  await this.optionsRepository
+                    .createQueryBuilder()
+                    .update(Options)
+                    .set(option)
+                    .where('id = :id', {id: optionId})
+                    .execute()
+                } else {
+                  option['quetion_id'] = quetionId
+                  option['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+                  await this.optionsRepository
+                    .createQueryBuilder()
+                    .insert()
+                    .into(Options)
+                    .values(option)
+                    .execute()
+                }
               }
-            })
+          } else {
+            quetion['quiz_id'] = id
+            quetion['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+            const quiz = await this.quetionsRepository.save(
+              this.quetionsRepository.create(quetion)
+            )
+
+            for(let option of optionsData) {
+              option['quetion_id'] = quiz['id']
+              option['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+              option['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+              console.log(option)
+              await this.optionsRepository
+                .createQueryBuilder()
+                .insert()
+                .into(Options)
+                .values(option)
+                .execute()
+            }
+          }
         }
 
         delete data.quetions

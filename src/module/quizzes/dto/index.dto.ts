@@ -72,6 +72,26 @@ class Options {
   is_correct: boolean;
 }
 
+class OptionsUpdate {
+  @ApiPropertyOptional()
+  @Type(() => String)
+  @IsOptional()
+  @IsString()
+  id: string;
+
+  @ApiPropertyOptional()
+  @Type(() => String)
+  @IsOptional()
+  @IsString()
+  name: string;
+
+  @ApiPropertyOptional()
+  @Type(() => Boolean)
+  @IsOptional()
+  @IsBoolean()
+  is_correct: boolean;
+}
+
 class Quetions {
   @ApiProperty()
   @Type(() => String)
@@ -88,6 +108,32 @@ class Quetions {
   @IsNotEmpty()
   @ValidateNested({each: true})
   options: Options[];
+}
+
+class QuetionsUpdate {
+  @ApiPropertyOptional()
+  @Type(() => String)
+  @IsOptional()
+  @IsString()
+  id: string;
+
+  @ApiPropertyOptional()
+  @Type(() => String)
+  @IsOptional()
+  @IsString()
+  name: string;
+
+  @ApiPropertyOptional()
+  @Type(() => String)
+  @IsOptional()
+  @IsString()
+  discuss: string;
+
+  @ApiPropertyOptional({type: [OptionsUpdate]})
+  @Type(() => OptionsUpdate)
+  @IsNotEmpty()
+  @ValidateNested({each: true})
+  options: OptionsUpdate[];
 }
 
 export class CreateQuizzesDTO {
@@ -117,11 +163,11 @@ export class UpdateQuizzesDTO {
   @IsOptional()
   name: string;
 
-  @ApiProperty({type: [Quetions]})
-  @Type(() => Quetions)
+  @ApiProperty({type: [QuetionsUpdate]})
+  @Type(() => QuetionsUpdate)
   @IsNotEmpty()
   @ValidateNested({each: true})
-  quetions: Quetions[];
+  quetions: QuetionsUpdate[];
 }
 
 export class UpdateQuetionDTO {
