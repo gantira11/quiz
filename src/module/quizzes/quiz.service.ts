@@ -153,7 +153,6 @@ export class QuizService {
         .createQueryBuilder('sub')
         .leftJoinAndSelect('sub.quizzes', 'quiz')
         .where('sub.deleted_at is null')
-        .andWhere('quiz.deleted_at is null')
 
       if(!!params.keyword) {
         query.andWhere('sub.name like :name', {name: `%${params.keyword}%`})
