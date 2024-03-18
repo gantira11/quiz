@@ -610,9 +610,8 @@ export class QuizService {
             }
             quizQuetion.push(quetions)
           }
+          quiz.quetions = quizQuetion
         }
-
-        quiz.quetions = quizQuetion
       }
 
       return quiz
