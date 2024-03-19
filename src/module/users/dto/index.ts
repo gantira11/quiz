@@ -41,10 +41,10 @@ export class UpdateUserDTO {
   @IsOptional()
   username: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @Type(() => String)
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   role_id: string;
 }
 
@@ -64,7 +64,7 @@ export class LoginDTO {
 
 export class GetDetailUserDTO {
   @ApiProperty()
-  @Type(() => Number)
+  @Type(() => String)
   @IsString()
   @IsNotEmpty()
   id: string;
