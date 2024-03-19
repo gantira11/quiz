@@ -80,7 +80,7 @@ export class UserController {
   @Post('/login')
   @ApiOperation({ summary: 'Login User' })
   @UsePipes(ValidationPipe)
-  async login(@Headers() headers: HeaderParamsDTO, @Body() body: LoginDTO, @Res() res) {
+  async login(@Body() body: LoginDTO, @Res() res) {
     let response = {}, statusCode = 500
     try {
       let process: any = await this.userService.login(body.username, body.password)
@@ -91,13 +91,7 @@ export class UserController {
 
         if(process.data.role.name === 'admin') isAdmin = true
         process.data.token = await this.jwtService.sign({...process.data})
-
-        if(headers.platform === 'web' && !isAdmin) {
-          statusCode = HttpStatus.BAD_REQUEST;
-          response = responseError(statusCode, 'Access Not Allowed');
-        } else {
-          response = responseSuccess(statusCode, process.message, process.data);
-        }
+        response = responseSuccess(statusCode, process.message, process.data);
       }
 
       res.status(statusCode).json(response);
