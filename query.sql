@@ -85,6 +85,7 @@ CREATE TABLE answers (
     id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     quetions TEXT NOT NULL,
     point DOUBLE NOT NULL,
+    duration INT NOT NULL
     quiz_id CHAR(36),
     FOREIGN KEY (quiz_id) REFERENCES quizzes(id),
     user_id CHAR(36),
@@ -93,3 +94,9 @@ CREATE TABLE answers (
     updated_at TIMESTAMP DEFAULT NULL,
     deleted_at TIMESTAMP DEFAULT NULL
 );
+
+-- Insert data roles
+INSERT INTO roles (id, name, created_at, updated_at)
+VALUES 
+(UUID(), 'admin', NOW(), NOW()),
+(UUID(), 'student', NOW(), NOW());
