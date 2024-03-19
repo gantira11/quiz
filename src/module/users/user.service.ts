@@ -27,6 +27,13 @@ export class UserService {
       data['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
       data['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
 
+      const checkUniqueUsername = await this.usersRepository
+        .createQueryBuilder('usr')
+        .where('usr.username = :username', {username: data.username})
+        .getOne()
+
+      if(!!checkUniqueUsername) throw new HttpException('Username has been used', HttpStatus.BAD_REQUEST)
+
       const result = await this.usersRepository.create(data)
       await this.usersRepository.save(result)
 
