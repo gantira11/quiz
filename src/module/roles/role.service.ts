@@ -16,8 +16,8 @@ export class RoleService {
   async create(body: RolePayload) {
     try {
       let data = body
-      data['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
-      data['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+      data['created_at'] = new Date()
+      data['updated_at'] = new Date()
 
       const result = await this.rolesRepository.create(data)
       await this.rolesRepository.save(result)
@@ -113,7 +113,7 @@ export class RoleService {
   async delete(id: string) {
     try {
       const data = {
-        deleted_at: moment.utc().format('YYYY-DD-MM HH:mm:ss')
+        deleted_at: new Date()
       }
 
       return await this.rolesRepository

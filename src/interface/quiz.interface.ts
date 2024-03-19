@@ -73,6 +73,7 @@ interface Answer {
 }
 
 export interface CreateAnswerPayload {
+  duration: number;
   quiz_id: string;
   quetions: Answer[];
 } 

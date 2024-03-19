@@ -25,8 +25,8 @@ export class UserService {
   async create(body: CreateUserPayload) {
     try {
       let data = body
-      data['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
-      data['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+      data['created_at'] = new Date()
+      data['updated_at'] = new Date()
 
       const result = await this.usersRepository.create(data)
       await this.usersRepository.save(result)
@@ -132,7 +132,7 @@ export class UserService {
   async update(id: string, body: UpdateUserPayload) {
     try {
       let data = body
-      data['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+      data['updated_at'] = new Date()
 
       return await this.usersRepository
         .createQueryBuilder()
@@ -156,7 +156,7 @@ export class UserService {
   async delete(id: string) {
     try {
       const data = {
-        deleted_at: moment.utc().format('YYYY-DD-MM HH:mm:ss')
+        deleted_at: new Date()
       }
 
       return await this.usersRepository

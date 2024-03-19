@@ -1,5 +1,5 @@
 import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Subjects } from 'src/schema/subjects.entity';
 import { Videos } from 'src/schema/videos.entity';
@@ -60,6 +60,36 @@ export class QuizService {
       const answersCurrent = await this.answersRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
       const answersDeleted = await this.answersRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
 
+      const twelveMonthsAgo = moment().subtract(11, 'months').startOf('month');
+      const months = [];
+      let tempDate = moment(twelveMonthsAgo);
+      for (let i = 0; i < 12; i++) {
+          const year = tempDate.year()
+          const month = tempDate.month() + 1
+          months.push(`${year}-${month.toString().padStart(2, '0')}`);
+          tempDate.add(1, 'month')
+      }
+
+      const answersPerMonth = await this.answersRepository.createQueryBuilder('query')
+          .select("DATE_FORMAT(query.created_at, '%Y-%m') AS month")
+          .addSelect("COUNT(query.id) AS total")
+          .addSelect("AVG(query.point) AS average_point")
+          .addSelect("AVG(query.duration) AS average_duration")
+          .where('query.deleted_at IS NULL')
+          .andWhere('query.created_at >= :twelveMonthsAgo', { twelveMonthsAgo: twelveMonthsAgo.format('YYYY-MM-DD HH:mm:ss') })
+          .groupBy('month')
+          .getRawMany()
+
+      const answerCount = months.map(month => {
+          const found = answersPerMonth.find(item => item.month === month);
+          return {
+              month,
+              total: found ? parseInt(found.total) : 0,
+              average_point: found ? parseFloat(found.average_point) : 0,
+              average_duration: found ? parseFloat(found.average_duration) : 0
+          };
+      });
+
       return {
         roles: {
           current: rolesCurrent,
@@ -96,6 +126,9 @@ export class QuizService {
           deleted: answersDeleted,
           total: answersCurrent + answersDeleted
         },
+        count: {
+          answer: answerCount
+        }
       }
     } catch (err) {
       throw new HttpException(err.message, err.code)
@@ -108,8 +141,8 @@ export class QuizService {
     try {
       let videos = []
       let data = body
-      data['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
-      data['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+      data['created_at'] = new Date()
+      data['updated_at'] = new Date()
 
       if(data.videos.length > 0) videos = data.videos
 
@@ -122,8 +155,8 @@ export class QuizService {
       if(videos.length > 0) {
         videos = videos.map((item) => {
           item['subject_id'] = subject['id']
-          item['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
-          item['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+          item['created_at'] = new Date()
+          item['updated_at'] = new Date()
           return item
         })
 
@@ -253,8 +286,8 @@ export class QuizService {
       if(!!data.videos ) {
         videos = data.videos.map((item) => {
           item['subject_id'] = id
-          item['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
-          item['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+          item['created_at'] = new Date()
+          item['updated_at'] = new Date()
           return item
         })
 
@@ -279,8 +312,8 @@ export class QuizService {
           }
 
           item['subject_id'] = id
-          item['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
-          item['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+          item['created_at'] = new Date()
+          item['updated_at'] = new Date()
 
           await this.quizzesRepository
             .createQueryBuilder()
@@ -291,8 +324,8 @@ export class QuizService {
             .then(async (quizResponse) => {
               for(let quetion of item.quetions) {
                 quetion['quiz_id'] = quizResponse['id']
-                quetion['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
-                quetion['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+                quetion['created_at'] = new Date()
+                quetion['updated_at'] = new Date()
                 await this.quetionsRepository
                   .createQueryBuilder()
                   .insert()
@@ -302,8 +335,8 @@ export class QuizService {
                   .then(async (quetionResponse) => {
                     for(let option of quetion.options) {
                       option['quetion_id'] = quetionResponse['id']
-                      option['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
-                      option['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+                      option['created_at'] = new Date()
+                      option['updated_at'] = new Date()
                       await this.optionsRepository
                         .createQueryBuilder()
                         .insert()
@@ -362,7 +395,7 @@ export class QuizService {
   async subjectDelete(id: string) {
     try {
       const data = {
-        deleted_at: moment.utc().format('YYYY-DD-MM HH:mm:ss')
+        deleted_at: new Date()
       }
 
       const subject = await this.subjectsRepository
@@ -447,7 +480,7 @@ export class QuizService {
   async videoDelete(id: string) {
     try {
       const data = {
-        deleted_at: moment.utc().format('YYYY-DD-MM HH:mm:ss')
+        deleted_at: new Date()
       }
 
       return await this.videosRepository
@@ -480,8 +513,8 @@ export class QuizService {
       quetions = data.quetions
       delete data.quetions
 
-      data['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
-      data['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+      data['created_at'] = new Date()
+      data['updated_at'] = new Date()
 
       const quiz = await this.quizzesRepository.save(
         this.quizzesRepository.create(data)
@@ -492,8 +525,8 @@ export class QuizService {
         for(let item of quetions) {
           let options = []
           item['quiz_id'] = quiz.id
-          item['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
-          item['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+          item['created_at'] = new Date()
+          item['updated_at'] = new Date()
 
           options = item.options
           delete item.options
@@ -506,8 +539,8 @@ export class QuizService {
 
           options = options.map((e) => {
             e['quetion_id'] = quetion['id']  
-            e['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
-            e['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+            e['created_at'] = new Date()
+            e['updated_at'] = new Date()
             return e
           })
 
@@ -625,7 +658,7 @@ export class QuizService {
           const optionsData = quetion.options
           delete quetion.options
 
-          quetion['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+          quetion['updated_at'] = new Date()
 
           if(!!quetion.id) {
             const quetionId = quetion.id
@@ -639,7 +672,7 @@ export class QuizService {
               .execute()
 
               for(let option of optionsData) {
-                option['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+                option['updated_at'] = new Date()
                 if(!!option.id) {
                   const optionId = option.id
                   delete option.id
@@ -652,7 +685,7 @@ export class QuizService {
                     .execute()
                 } else {
                   option['quetion_id'] = quetionId
-                  option['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+                  option['created_at'] = new Date()
                   await this.optionsRepository
                     .createQueryBuilder()
                     .insert()
@@ -663,15 +696,15 @@ export class QuizService {
               }
           } else {
             quetion['quiz_id'] = id
-            quetion['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+            quetion['created_at'] = new Date()
             const quiz = await this.quetionsRepository.save(
               this.quetionsRepository.create(quetion)
             )
 
             for(let option of optionsData) {
               option['quetion_id'] = quiz['id']
-              option['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
-              option['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+              option['created_at'] = new Date()
+              option['updated_at'] = new Date()
               console.log(option)
               await this.optionsRepository
                 .createQueryBuilder()
@@ -701,7 +734,7 @@ export class QuizService {
   async quizDelete(id: string) {
     try {
       const data = {
-        deleted_at: moment.utc().format('YYYY-DD-MM HH:mm:ss')
+        deleted_at: new Date()
       }
 
       const quizzes = await this.quizzesRepository
@@ -777,8 +810,8 @@ export class QuizService {
       if(!!data.options) {
         for(let item of data.options) {
           item['quetion_id'] = id
-          item['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
-          item['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+          item['created_at'] = new Date()
+          item['updated_at'] = new Date()
           await this.optionsRepository
             .createQueryBuilder()
             .insert()
@@ -802,7 +835,7 @@ export class QuizService {
   async quetionDelete(id: string) {
     try {
       const data = {
-        deleted_at: moment.utc().format('YYYY-DD-MM HH:mm:ss')
+        deleted_at: new Date()
       }
 
       const quetions = await this.quetionsRepository
@@ -862,7 +895,7 @@ export class QuizService {
   async optionDelete(id: string) {
     try {
       const data = {
-        deleted_at: moment.utc().format('YYYY-DD-MM HH:mm:ss')
+        deleted_at: new Date()
       }
 
       return await this.optionsRepository
@@ -884,8 +917,8 @@ export class QuizService {
 
       let data: any = body
       data['user_id'] = user_id
-      data['created_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
-      data['updated_at'] = moment.utc().format('YYYY-DD-MM HH:mm:ss')
+      data['created_at'] = new Date()
+      data['updated_at'] = new Date()
 
       const quizzes = await this.quizzesRepository
         .createQueryBuilder('quiz')

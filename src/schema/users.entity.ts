@@ -21,10 +21,10 @@ export class Users {
   @Column()
   role_id: string;
 
-  @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ default: null })
   created_at: Date;
 
-  @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ default: null })
   updated_at: Date;
 
   @Column({ nullable: true })

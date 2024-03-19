@@ -16,6 +16,9 @@ export class Answers {
   point: number;
 
   @Column()
+  duration: number;
+
+  @Column()
   quiz_id: string;
 
   @Column()

@@ -248,6 +248,12 @@ class Answer {
 
 export class CreateAnswerDTO {
   @ApiProperty()
+  @Type(() => Number)
+  @IsNumber()
+  @IsNotEmpty()
+  duration: number;
+
+  @ApiProperty()
   @Type(() => String)
   @IsString()
   @IsNotEmpty()
