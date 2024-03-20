@@ -74,7 +74,6 @@ export class QuizService {
           .select("DATE_FORMAT(query.created_at, '%Y-%m') AS month")
           .addSelect("COUNT(query.id) AS total")
           .addSelect("AVG(query.point) AS average_point")
-          .addSelect("AVG(query.duration) AS average_duration")
           .where('query.deleted_at IS NULL')
           .andWhere('query.created_at >= :twelveMonthsAgo', { twelveMonthsAgo: twelveMonthsAgo.format('YYYY-MM-DD HH:mm:ss') })
           .groupBy('month')
@@ -85,8 +84,7 @@ export class QuizService {
           return {
               month,
               total: found ? parseInt(found.total) : 0,
-              average_point: found ? parseFloat(found.average_point) : 0,
-              average_duration: found ? parseFloat(found.average_duration) : 0
+              average_point: found ? parseFloat(found.average_point) : 0
           };
       });
 
