@@ -144,6 +144,12 @@ export class CreateQuizzesDTO {
   name: string;
 
   @ApiProperty()
+  @Type(() => Number)
+  @IsNumber()
+  @IsNotEmpty()
+  duration: number;
+
+  @ApiProperty()
   @Type(() => String)
   @IsString()
   @IsNotEmpty()
@@ -163,10 +169,16 @@ export class UpdateQuizzesDTO {
   @IsOptional()
   name: string;
 
-  @ApiProperty({type: [QuetionsUpdate]})
+  @ApiPropertyOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @IsOptional()
+  duration: number;
+
+  @ApiPropertyOptional({type: [QuetionsUpdate]})
   @Type(() => QuetionsUpdate)
   @IsNotEmpty()
-  @ValidateNested({each: true})
+  @IsOptional({each: true})
   quetions: QuetionsUpdate[];
 }
 
@@ -248,12 +260,6 @@ class Answer {
 
 export class CreateAnswerDTO {
   @ApiProperty()
-  @Type(() => Number)
-  @IsNumber()
-  @IsNotEmpty()
-  duration: number;
-
-  @ApiProperty()
   @Type(() => String)
   @IsString()
   @IsNotEmpty()
@@ -264,4 +270,12 @@ export class CreateAnswerDTO {
   @IsNotEmpty()
   @ValidateNested({each: true})
   quetions: Answer[];
+}
+
+export class SubjectId {
+  @ApiProperty()
+  @Type(() => String)
+  @IsString()
+  @IsNotEmpty()
+  subject_id: string;
 }

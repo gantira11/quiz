@@ -61,6 +61,7 @@ CREATE TABLE quetions (
     id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     name VARCHAR(255) NOT NULL,
     discuss TEXT DEFAULT NULL,
+    duration INT NOT NULL
     quiz_id CHAR(36),
     FOREIGN KEY (quiz_id) REFERENCES quizzes(id),
     created_at TIMESTAMP DEFAULT NULL,
@@ -85,7 +86,6 @@ CREATE TABLE answers (
     id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     quetions TEXT NOT NULL,
     point DOUBLE NOT NULL,
-    duration INT NOT NULL
     quiz_id CHAR(36),
     FOREIGN KEY (quiz_id) REFERENCES quizzes(id),
     user_id CHAR(36),

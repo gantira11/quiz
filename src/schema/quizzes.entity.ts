@@ -14,6 +14,9 @@ export class Quizzes {
   name: string;
 
   @Column()
+  duration: number;
+
+  @Column()
   subject_id: string;
 
   @Column({ default: () => 'CURRENT_TIMESTAMP' })

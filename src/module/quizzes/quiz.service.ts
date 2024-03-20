@@ -497,8 +497,6 @@ export class QuizService {
 
   async quizCreate(body: CreateQuizzesPayload) {
     try {
-      console.log(body)
-
       for(const item of body.quetions) {
         const isCorrect = item.options.filter((correct) => !!correct.is_correct).length
 
@@ -559,7 +557,7 @@ export class QuizService {
     }
   }
 
-  async quizList(params: any) {
+  async quizList(params: any, subject_id: string) {
     try {
       let page = params.page ? parseInt(params.page) : 1
       let limit = params.limit ? parseInt(params.limit) : 10
@@ -568,6 +566,7 @@ export class QuizService {
         .createQueryBuilder('quiz')
         .leftJoinAndSelect('quiz.quetions', 'quetion')
         .where('quiz.deleted_at is null')
+        .andWhere('quiz.subject_id = :subject_id', {subject_id})
         .andWhere('quetion.deleted_at is null')
 
       if(!!params.keyword) {
@@ -705,7 +704,7 @@ export class QuizService {
               option['quetion_id'] = quiz['id']
               option['created_at'] = new Date()
               option['updated_at'] = new Date()
-              console.log(option)
+
               await this.optionsRepository
                 .createQueryBuilder()
                 .insert()
