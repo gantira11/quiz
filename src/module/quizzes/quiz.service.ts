@@ -45,20 +45,20 @@ export class QuizService {
 
   async dashboard() {
     try {
-      const rolesCurrent = await this.rolesRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
-      const rolesDeleted = await this.rolesRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
-      const usersCurrent = await this.usersRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
-      const usersDeleted = await this.usersRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
-      const subjectsCurrent = await this.subjectsRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
-      const subjectsDeleted = await this.subjectsRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
-      const quizzesCurrent = await this.quizzesRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
-      const quizzesDeleted = await this.quizzesRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
-      const quetionsCurrent = await this.quetionsRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
-      const quetionsDeleted = await this.quetionsRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
-      const optionsCurrent = await this.optionsRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
-      const optionsDeleted = await this.optionsRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
-      const answersCurrent = await this.answersRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
-      const answersDeleted = await this.answersRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
+      const rolesCurrent = await this.rolesRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
+      const rolesDeleted = await this.rolesRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
+      const usersCurrent = await this.usersRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
+      const usersDeleted = await this.usersRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
+      const subjectsCurrent = await this.subjectsRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
+      const subjectsDeleted = await this.subjectsRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
+      const quizzesCurrent = await this.quizzesRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
+      const quizzesDeleted = await this.quizzesRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
+      const quetionsCurrent = await this.quetionsRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
+      const quetionsDeleted = await this.quetionsRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
+      const optionsCurrent = await this.optionsRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
+      const optionsDeleted = await this.optionsRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
+      const answersCurrent = await this.answersRepository.createQueryBuilder('query').where('query.deleted_at is null').getCount()
+      const answersDeleted = await this.answersRepository.createQueryBuilder('query').where('query.deleted_at is not null').getCount()
 
       const twelveMonthsAgo = moment().subtract(11, 'months').startOf('month');
       const months = [];
