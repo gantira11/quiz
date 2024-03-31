@@ -46,6 +46,12 @@ export class UpdateUserDTO {
   @IsString()
   @IsOptional()
   role_id: string;
+
+  @ApiPropertyOptional()
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  password: string;
 }
 
 export class LoginDTO {

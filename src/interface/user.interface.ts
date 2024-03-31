@@ -9,6 +9,7 @@ export interface UpdateUserPayload {
   name?: string;
   username?: string;
   role_id?: string;
+  password?: string;
 }
 
 export interface UpdatePassword {
