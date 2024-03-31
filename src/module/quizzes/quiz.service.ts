@@ -355,6 +355,7 @@ export class QuizService {
         .createQueryBuilder()
         .update(Subjects)
         .set(data)
+        .where('id = :id', {id})
         .execute()
         .then(async (res) => {
           if(res.affected < 1) throw new HttpException('Failed to update data', HttpStatus.INTERNAL_SERVER_ERROR)
@@ -377,6 +378,7 @@ export class QuizService {
         .createQueryBuilder()
         .update(Subjects)
         .set(data)
+        .where('id = :id', {id})
         .execute()
         .then(async (res) => {
           if(res.affected < 1) throw new HttpException('Failed to update data', HttpStatus.INTERNAL_SERVER_ERROR)
