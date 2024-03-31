@@ -164,8 +164,8 @@ export class UserController {
         const check = await this.userService.check(body.username)
 
         if(!!check) {
-          response = responseError(202, 'Username is already used')
-          return res.status(202).json(response)
+          response = responseError(400, 'Username is already used')
+          return res.status(400).json(response)
         }
       }
 
