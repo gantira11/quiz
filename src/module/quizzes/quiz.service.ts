@@ -667,7 +667,7 @@ export class QuizService {
               .createQueryBuilder()
               .update(Quetions)
               .set(quetion)
-              .where('id = :id', {id: quetion.id})
+              .where('id = :id', {id: quetionId})
               .execute()
 
               for(let option of optionsData) {
