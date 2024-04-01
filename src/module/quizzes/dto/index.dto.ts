@@ -251,10 +251,10 @@ class Answer {
   @IsNotEmpty()
   quetion_id: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @Type(() => String)
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   option_id: string;
 }
 
