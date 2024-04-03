@@ -181,6 +181,8 @@ export class UserController {
 
       if(!!body.password && body.password !== '') {
         body.password = await bcrypt.hash(body.password, 10)
+      } else {
+        delete body.password
       }
 
       const process = await this.userService.update(param.id, body)
