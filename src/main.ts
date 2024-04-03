@@ -35,7 +35,7 @@ async function bootstrap() {
     'credentials': true
   }
 
-  app.use(json({ limit: '10mb' }));
+  app.use(json({ limit: '1gb' }));
 
   app.enableCors(corsOptions);
 
