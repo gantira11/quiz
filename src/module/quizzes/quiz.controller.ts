@@ -21,7 +21,7 @@ import JwtAuthGuard from 'src/utils/guards/jwt-auth.guard';
 import { responseError, responseSuccess } from 'src/utils/response';
 import { PaginationParams } from 'src/utils/dto/pagination-dto';
 import { QuizService } from './quiz.service';
-import { CreateAnswerDTO, CreateQuizzesDTO, CreateSubjectDTO, ParamsId, SubjectId, UpdateQuetionDTO, UpdateQuizzesDTO, UpdateSubjectDTO, UpdateVideosDTO } from './dto/index.dto';
+import { CreateAnswerDTO, CreateQuizzesDTO, CreateSubjectDTO, ParamsId, QuizListParam, SubjectId, UpdateQuetionDTO, UpdateQuizzesDTO, UpdateSubjectDTO, UpdateVideosDTO } from './dto/index.dto';
 
 const moment = require('moment');
 
@@ -270,7 +270,7 @@ export class QuizController {
   @Get('quiz-list/:subject_id')
   @ApiOperation({ summary: 'List Quizzes' })
   @UsePipes(ValidationPipe)
-  async quizList(@Param() param: SubjectId, @Query() query: PaginationParams, @Res() res) {
+  async quizList(@Param() param: SubjectId, @Query() query: QuizListParam, @Res() res) {
     let response = {}, statusCode = 500
     try {
       const process = await this.quizService.quizList(query, param.subject_id)

@@ -1,6 +1,7 @@
-import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { PaginationParams } from 'src/utils/dto/pagination-dto';
 
 class Videos {
   @ApiProperty()
@@ -136,6 +137,11 @@ class QuetionsUpdate {
   options: OptionsUpdate[];
 }
 
+enum Category {
+  pra = "Pra Test",
+  evaluation = "Evaluasi"
+}
+
 export class CreateQuizzesDTO {
   @ApiProperty()
   @Type(() => String)
@@ -154,6 +160,13 @@ export class CreateQuizzesDTO {
   @IsString()
   @IsNotEmpty()
   subject_id: string;
+
+  @ApiProperty()
+  @Type(() => String)
+  @IsEnum(Category)
+  @IsString()
+  @IsNotEmpty()
+  category: string;
 
   @ApiProperty({type: [Quetions]})
   @Type(() => Quetions)
@@ -174,6 +187,13 @@ export class UpdateQuizzesDTO {
   @IsNumber()
   @IsOptional()
   duration: number;
+
+  @ApiProperty()
+  @Type(() => String)
+  @IsEnum(Category)
+  @IsString()
+  @IsNotEmpty()
+  category: string;
 
   @ApiPropertyOptional({type: [QuetionsUpdate]})
   @Type(() => QuetionsUpdate)
@@ -278,4 +298,12 @@ export class SubjectId {
   @IsString()
   @IsNotEmpty()
   subject_id: string;
+}
+
+export class QuizListParam extends PaginationParams {
+  @ApiPropertyOptional({ enum: ['Pra Test', 'Evaluasi'] })
+  @IsOptional()
+  @Type(() => String)
+  @IsString()
+  category: Category;
 }

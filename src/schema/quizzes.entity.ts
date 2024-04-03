@@ -19,6 +19,9 @@ export class Quizzes {
   @Column()
   subject_id: string;
 
+  @Column()
+  category: string;
+
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
 

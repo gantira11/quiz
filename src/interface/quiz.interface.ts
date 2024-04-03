@@ -49,6 +49,7 @@ export interface CreateQuizzesPayload {
   name: string;
   duration: number;
   subject_id: string;
+  category: string;
   quetions: Quetions[];
 }
 

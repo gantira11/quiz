@@ -569,6 +569,10 @@ export class QuizService {
         .andWhere('quiz.subject_id = :subject_id', {subject_id})
         .andWhere('quetion.deleted_at is null')
 
+      if(!!params.category) {
+        query.andWhere('quiz.category = :category', { category: params.category })
+      }
+
       if(!!params.keyword) {
         query.andWhere('quiz.name like :name', {name: `%${params.keyword}%`})
       }
