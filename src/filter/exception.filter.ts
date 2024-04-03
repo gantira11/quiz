@@ -27,7 +27,7 @@ export class AppExceptionFilter implements ExceptionFilter {
     }
 
     // handle http exception errors
-    let statusCode = exception.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR;
+    let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
 
     // parse logger attribute from request headers
     if (request.headers?.logger) {
