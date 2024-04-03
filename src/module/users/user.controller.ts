@@ -160,7 +160,8 @@ export class UserController {
     let response = {}, statusCode = 500
 
     try {
-      if(!!body.username && auth_user.username !== body.username) {
+      const user = await this.userService.detail(param.id)
+      if(!!body.username && user.username !== body.username) {
         const check = await this.userService.check(body.username)
 
         if(!!check) {
