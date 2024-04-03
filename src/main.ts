@@ -8,6 +8,7 @@ import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as basicAuth from 'express-basic-auth';
 import 'dotenv/config';
+import { json } from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -33,6 +34,8 @@ async function bootstrap() {
     'optionsSuccessStatus': 204,
     'credentials': true
   }
+
+  app.use(json({ limit: '10mb' }));
 
   app.enableCors(corsOptions);
 
