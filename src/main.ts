@@ -17,7 +17,7 @@ async function bootstrap() {
 		next();
 	});
 
-	var whitelist = process.env.CORS_OPTION_ORIGIN.split(",");
+	// var whitelist = process.env.CORS_OPTION_ORIGIN.split(",");
   const corsOptions = {
 		exposedHeaders: ['Content-Disposition'],
     // 'origin': function (origin, callback) {
