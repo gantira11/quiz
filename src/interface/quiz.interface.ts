@@ -35,6 +35,7 @@ interface OptionsUpdate {
 interface Quetions {
   name: string;
   discuss: string;
+  weight: number;
   options: Options[];
 }
 
@@ -42,6 +43,7 @@ interface QuetionsUpdate {
   id?: string;
   name?: string;
   discuss?: string;
+  weight?: number;
   options?: OptionsUpdate[];
 }
 
@@ -62,6 +64,7 @@ export interface UpdateQuizzessPayload {
 export interface UpdateQuetionPayload {
   name?: string;
   discuss?: string;
+  weight?: number;
   options?: QuetionsUpdate[];
 }
 

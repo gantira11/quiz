@@ -916,7 +916,7 @@ export class QuizService {
   async answerCreate(user_id: string, body: CreateAnswerPayload) {
     try {
       let totalQuetion = 0
-      let totalAnswer = 0
+      let point = 0
 
       let data: any = body
       data['user_id'] = user_id
@@ -935,19 +935,20 @@ export class QuizService {
       quizzes.quetions.forEach((item) => {
         const correct = item.options.find((op) => op.is_correct)
         let answer: any = data.quetions.find((que) => que.quetion_id === item.id)
-        answer = answer.option_id === correct.id
 
-        if(!!answer) ++totalAnswer
+        if(answer.option_id === correct.id) point = point + item.weight
       })
 
       totalQuetion = quizzes.quetions.length
 
-      data['point'] = Math.round(( totalAnswer/totalQuetion) * 100)
+      data['point'] = point
       data['quetions'] = JSON.stringify(data.quetions)
 
-      return await this.answersRepository.save(
-        await this.answersRepository.create(data)
-      )
+      console.log(data)
+      return true
+      // return await this.answersRepository.save(
+      //   await this.answersRepository.create(data)
+      // )
     } catch (err) {
       throw new HttpException(err.message, err.code)
     }

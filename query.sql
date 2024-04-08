@@ -62,6 +62,7 @@ CREATE TABLE quetions (
     name VARCHAR(255) NOT NULL,
     discuss TEXT DEFAULT NULL,
     duration INT NOT NULL
+    weight INT NOT NULL
     quiz_id CHAR(36),
     FOREIGN KEY (quiz_id) REFERENCES quizzes(id),
     created_at TIMESTAMP DEFAULT NULL,

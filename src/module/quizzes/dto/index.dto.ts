@@ -104,6 +104,11 @@ class Quetions {
   @IsString()
   discuss: string;
 
+  @ApiProperty()
+  @Type(() => Number)
+  @IsNumber()
+  weight: number;
+
   @ApiProperty({type: [Options]})
   @Type(() => Options)
   @IsNotEmpty()
@@ -129,6 +134,12 @@ class QuetionsUpdate {
   @IsOptional()
   @IsString()
   discuss: string;
+
+  @ApiPropertyOptional()
+  @Type(() => Number)
+  @IsOptional()
+  @IsNumber()
+  weight: number;
 
   @ApiPropertyOptional({type: [OptionsUpdate]})
   @Type(() => OptionsUpdate)
@@ -214,6 +225,12 @@ export class UpdateQuetionDTO {
   @IsString()
   @IsOptional()
   discuss: string;
+
+  @ApiPropertyOptional()
+  @Type(() => Number)
+  @IsOptional()
+  @IsNumber()
+  weight: number;
 
   @ApiProperty({type: [Options]})
   @Type(() => Options)

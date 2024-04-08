@@ -16,6 +16,9 @@ export class Quetions {
   discuss: string;
 
   @Column()
+  weight: number;
+
+  @Column()
   quiz_id: string;
 
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
