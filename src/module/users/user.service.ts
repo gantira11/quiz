@@ -82,6 +82,8 @@ export class UserService {
         })
       }
 
+      query.orderBy('usr.name', 'ASC')
+
       let count = await query.getCount();
       let pageCount = Math.ceil(count / limit)
 
