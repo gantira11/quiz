@@ -944,11 +944,9 @@ export class QuizService {
       data['point'] = point
       data['quetions'] = JSON.stringify(data.quetions)
 
-      console.log(data)
-      return true
-      // return await this.answersRepository.save(
-      //   await this.answersRepository.create(data)
-      // )
+      return await this.answersRepository.save(
+        await this.answersRepository.create(data)
+      )
     } catch (err) {
       throw new HttpException(err.message, err.code)
     }
