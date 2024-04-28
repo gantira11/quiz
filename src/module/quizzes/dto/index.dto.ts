@@ -324,3 +324,31 @@ export class QuizListParam extends PaginationParams {
   @IsString()
   category: Category;
 }
+
+export class CreateObjectivesDTO {
+  @ApiProperty()
+  @Type(() => String)
+  @IsString()
+  @IsNotEmpty()
+  title: string;
+
+  @ApiProperty()
+  @Type(() => String)
+  @IsString()
+  @IsNotEmpty()
+  body: string;
+}
+
+export class UpdateObjectivesDTO {
+  @ApiPropertyOptional()
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  title: string;
+
+  @ApiPropertyOptional()
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  body: string;
+}

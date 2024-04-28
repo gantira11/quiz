@@ -21,7 +21,7 @@ import JwtAuthGuard from 'src/utils/guards/jwt-auth.guard';
 import { responseError, responseSuccess } from 'src/utils/response';
 import { PaginationParams } from 'src/utils/dto/pagination-dto';
 import { QuizService } from './quiz.service';
-import { CreateAnswerDTO, CreateQuizzesDTO, CreateSubjectDTO, ParamsId, QuizListParam, SubjectId, UpdateQuetionDTO, UpdateQuizzesDTO, UpdateSubjectDTO, UpdateVideosDTO } from './dto/index.dto';
+import { CreateAnswerDTO, CreateObjectivesDTO, CreateQuizzesDTO, CreateSubjectDTO, ParamsId, QuizListParam, SubjectId, UpdateObjectivesDTO, UpdateQuetionDTO, UpdateQuizzesDTO, UpdateSubjectDTO, UpdateVideosDTO } from './dto/index.dto';
 
 const moment = require('moment');
 
@@ -552,6 +552,146 @@ export class QuizController {
     let response = {}, statusCode = 500
     try {
       const process = await this.quizService.answerDetail(param.id)
+
+      if(!process) {
+        response = responseError(statusCode, 'Internal Server Error');
+      } else {
+        statusCode = HttpStatus.OK;
+        response = responseSuccess(statusCode, 'Success', process);
+      }
+
+      res.status(statusCode).json(response);
+    } catch (error) {
+      response = responseError(statusCode, error)
+      res.status(statusCode).json(response)
+    }
+  }
+
+  @Delete('answer-delete/:id')
+  @ApiOperation({ summary: 'Delete Answes' })
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(ValidationPipe)
+  async answerDelete(@Param() param: ParamsId, @AuthUser() auth_user, @Res() res) {
+    let response = {}, statusCode = 500
+    try {
+      if(auth_user.role.name !== 'admin') throw new HttpException('Access Not Allowed', HttpStatus.BAD_REQUEST)
+      const process = await this.quizService.optionDelete(param.id)
+
+      if(!process) {
+        response = responseError(statusCode, 'Internal Server Error');
+      } else {
+        statusCode = HttpStatus.OK;
+        response = responseSuccess(statusCode, 'Success', process);
+      }
+
+      res.status(statusCode).json(response);
+    } catch (error) {
+      response = responseError(statusCode, error)
+      res.status(statusCode).json(response)
+    }
+  }
+
+  @Post('/create-objectives')
+  @ApiOperation({ summary: 'Create Objectives' })
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(ValidationPipe)
+  async objectivesCreate(@Body() body: CreateObjectivesDTO, @AuthUser() auth_user, @Res() res) {
+    let response = {}, statusCode = 500
+    try {
+      if(auth_user.role.name !== 'admin') throw new HttpException('Access Not Allowed', HttpStatus.BAD_REQUEST)
+      const process = await this.quizService.objectivesCreate(body)
+
+      if(!process) {
+        response = responseError(statusCode, 'Internal Server Error')
+      } else {
+        statusCode = HttpStatus.OK;
+        response = responseSuccess(statusCode, 'Success', process)
+      }
+
+      res.status(statusCode).json(response);
+    } catch (error) {
+      response = responseError(statusCode, error)
+      res.status(statusCode).json(response)
+    }
+  }
+
+  @Get('objectives-list')
+  @ApiOperation({ summary: 'List Objectives' })
+  @UsePipes(ValidationPipe)
+  async objectivesList(@Query() param: PaginationParams, @Res() res) {
+    let response = {}, statusCode = 500
+    try {
+      const process = await this.quizService.objectivesList(param)
+
+      if(!process) {
+        response = responseError(statusCode, 'Internal Server Error');
+      } else {
+        statusCode = HttpStatus.OK;
+        response = responseSuccess(statusCode, 'Success', process);
+      }
+
+      res.status(statusCode).json(response);
+    } catch (error) {
+      response = responseError(statusCode, error)
+      res.status(statusCode).json(response)
+    }
+  }
+
+  @Get('objectives-detail/:id')
+  @ApiOperation({ summary: 'Detail Objectives' })
+  @UsePipes(ValidationPipe)
+  async objectivesDetail(@Param() param: ParamsId, @Res() res) {
+    let response = {}, statusCode = 500
+    try {
+      const process = await this.quizService.objectivesDetail(param.id)
+
+      if(!process) {
+        response = responseError(statusCode, 'Internal Server Error');
+      } else {
+        statusCode = HttpStatus.OK;
+        response = responseSuccess(statusCode, 'Success', process);
+      }
+
+      res.status(statusCode).json(response);
+    } catch (error) {
+      response = responseError(statusCode, error)
+      res.status(statusCode).json(response)
+    }
+  }
+
+  @Put('objectives-update/:id')
+  @ApiOperation({ summary: 'Update Objectives' })
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(ValidationPipe)
+  async objectivesUpdate(@Param() param: ParamsId, @Body() body: UpdateObjectivesDTO, @AuthUser() auth_user, @Res() res) {
+    let response = {}, statusCode = 500
+    try {
+      if(auth_user.role.name !== 'admin') throw new HttpException('Access Not Allowed', HttpStatus.BAD_REQUEST)
+      const process = await this.quizService.objectivesUpdate(param.id, body)
+
+      if(!process) {
+        response = responseError(statusCode, 'Internal Server Error');
+      } else {
+        statusCode = HttpStatus.OK;
+        response = responseSuccess(statusCode, 'Success', process);
+      }
+
+      res.status(statusCode).json(response);
+    } catch (error) {
+      response = responseError(statusCode, error)
+      res.status(statusCode).json(response)
+    }
+  }
+
+  @Delete('objectives-delete/:id')
+  @ApiOperation({ summary: 'Delete Objectives' })
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(ValidationPipe)
+  async objectivesDelete(@Param() param: ParamsId, @AuthUser() auth_user, @Res() res) {
+    let response = {}, statusCode = 500
+    try {
+      if(auth_user.role.name !== 'admin') throw new HttpException('Access Not Allowed', HttpStatus.BAD_REQUEST)
+      const process = await this.quizService.objectivesDelete(param.id)
 
       if(!process) {
         response = responseError(statusCode, 'Internal Server Error');

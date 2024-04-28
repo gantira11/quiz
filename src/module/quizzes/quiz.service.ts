@@ -5,6 +5,7 @@ import { Subjects } from 'src/schema/subjects.entity';
 import { Videos } from 'src/schema/videos.entity';
 import {
   CreateAnswerPayload,
+  CreateObjectives,
   CreateQuizzesPayload,
   CreateSubjectPayload,
   UpdateOptionPayload,
@@ -19,6 +20,7 @@ import { Options } from 'src/schema/options.entity';
 import { Answers } from 'src/schema/answers.entity';
 import { Users } from 'src/schema/users.entity';
 import { Roles } from 'src/schema/roles.entity';
+import { Objectives } from 'src/schema/objectives.entity';
 
 const moment = require('moment');
 
@@ -41,6 +43,8 @@ export class QuizService {
     private optionsRepository: Repository<Options>,
     @InjectRepository(Answers)
     private answersRepository: Repository<Answers>,
+    @InjectRepository(Objectives)
+    private objectivesRepository: Repository<Objectives>,
   ) {}
 
   async dashboard() {
@@ -1044,6 +1048,126 @@ export class QuizService {
       result['answers'] = userAnswer
 
       return result
+    } catch (err) {
+      throw new HttpException(err.message, err.code)
+    }
+  }
+
+  async answerDelete(id: string) {
+    try {
+      const data = {
+        deleted_at: new Date()
+      }
+
+      return await this.answersRepository
+        .createQueryBuilder()
+        .update(Answers)
+        .set(data)
+        .where('id = :id', {id})
+        .execute()
+    } catch (err) {
+      throw new HttpException(err.message, err.code)
+    }
+  }
+
+  async objectivesCreate(body: CreateObjectives) {
+    try {
+      let data = body
+      data['created_at'] = new Date()
+      data['updated_at'] = new Date()
+
+      return await this.objectivesRepository.save(
+        await this.objectivesRepository.create(data)
+      )
+    } catch (err) {
+      throw new HttpException(err.message, err.code)
+    }
+  }
+
+  async objectivesList(params: any) {
+    try {
+      let page = params.page ? parseInt(params.page) : 1
+      let limit = params.limit ? parseInt(params.limit) : 10
+
+      let query = await this.objectivesRepository
+        .createQueryBuilder('obj')
+        .where('obj.deleted_at is null')
+
+      let count = await query.getCount()
+      let pageCount = Math.ceil(count / limit)
+
+      if (page > pageCount) {
+        page = page == 1 ? page : pageCount
+      }
+
+      const offset = page == 1 ? 0 : (page - 1) * limit
+
+      let report = await query
+        .take(limit)
+        .skip(offset)
+        .getMany();
+
+      const slNo = page == 1 ? 0 : (page - 1) * limit - 1
+
+      const paginator = {
+        itemCount: count,
+        limit: limit,
+        pageCount: pageCount,
+        page: page,
+        slNo: slNo + 1,
+        hasPrevPage: page > 1 ? true : false,
+        hasNextPage: page < pageCount ? true : false,
+        prevPage: page > 1 && page != 1 ? page - 1 : null,
+        nextPage: page < pageCount ? page + 1 : null,
+      };
+
+      let result = {
+        objectives: count > 0 ? report : [],
+        paginator: paginator
+      }
+
+      return result
+    } catch (err) {
+      throw new HttpException(err.message, err.code)
+    }
+  }
+
+  async objectivesDetail(id: string) {
+    return await this.objectivesRepository
+      .createQueryBuilder('obj')
+      .where('obj.id = :id', {id})
+      .getOne()
+  }
+
+  async objectivesUpdate(id: string, body: CreateObjectives) {
+    try {
+      let data = body
+      data['updated_at'] = moment.utc().format('YYYY-MM-DD HH:mm:ss')
+
+      return await this.objectivesRepository
+        .createQueryBuilder()
+        .update(Objectives)
+        .set(data)
+        .where('id = :id', {id})
+        .execute()
+    } catch (err) {
+      throw new HttpException(err.message, err.code)
+    }
+  }
+
+  async objectivesDelete(id: string) {
+    try {
+      const data = {
+        deleted_at: new Date()
+      }
+
+      return await this.objectivesRepository
+        .createQueryBuilder()
+        .update(Objectives)
+        .set(data)
+        .where('id = :id', {id})
+        .execute()
+
     } catch (err) {
       throw new HttpException(err.message, err.code)
     }

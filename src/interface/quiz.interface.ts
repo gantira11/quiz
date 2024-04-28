@@ -82,3 +82,8 @@ export interface CreateAnswerPayload {
   quiz_id: string;
   quetions: Answer[];
 } 
+
+export interface CreateObjectives {
+  title?: string;
+  body?: string;
+}

@@ -10,6 +10,7 @@ import { Options } from 'src/schema/options.entity';
 import { Answers } from 'src/schema/answers.entity';
 import { Roles } from 'src/schema/roles.entity';
 import { Users } from 'src/schema/users.entity';
+import { Objectives } from 'src/schema/objectives.entity';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { Users } from 'src/schema/users.entity';
       Options,
       Answers,
       Roles,
-      Users
+      Users,
+      Objectives
     ]),
   ],
   controllers: [QuizController],

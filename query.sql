@@ -104,3 +104,13 @@ VALUES
 
 -- Add Column in Quizzes
 ALTER TABLE quizzes ADD category VARCHAR(255) NOT NULL
+
+-- Tabel objectives
+CREATE TABLE objectives (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    title VARCHAR(255) NOT NULL,
+    body LONGTEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NULL,
+    updated_at TIMESTAMP DEFAULT NULL,
+    deleted_at TIMESTAMP DEFAULT NULL
+);
