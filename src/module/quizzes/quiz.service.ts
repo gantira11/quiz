@@ -1035,11 +1035,13 @@ export class QuizService {
       let userAnswer = JSON.parse(answer.quetions)
       userAnswer = userAnswer.map((item) => {
         const findQue = answer.quiz.quetions.find((que) => que.id === item.quetion_id)
+        const allOpt = findQue.options.map((value) => { return value.name })
         const ansOpt = findQue.options.find((op) => op.id === item.option_id)
         const trueOpt = findQue.options.find((op) => !!op.is_correct)
 
         return {
           quetion: findQue.name,
+          option: allOpt,
           user_answer: ansOpt.name,
           true_answer: trueOpt.name
         }
