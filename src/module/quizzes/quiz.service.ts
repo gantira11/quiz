@@ -1024,6 +1024,7 @@ export class QuizService {
         .leftJoinAndSelect('quiz.quetions', 'que')
         .leftJoinAndSelect('que.options', 'op')
         .leftJoinAndSelect('ans.user', 'user')
+        .where('ans.id = :id', {id})
         .getOne()
 
       if(!answer) throw new HttpException('Answers is not found.', HttpStatus.NOT_FOUND)
