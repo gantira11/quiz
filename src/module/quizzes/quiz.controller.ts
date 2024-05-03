@@ -575,7 +575,7 @@ export class QuizController {
     let response = {}, statusCode = 500
     try {
       if(auth_user.role.name !== 'admin') throw new HttpException('Access Not Allowed', HttpStatus.BAD_REQUEST)
-      const process = await this.quizService.optionDelete(param.id)
+      const process = await this.quizService.answerDelete(param.id)
 
       if(!process) {
         response = responseError(statusCode, 'Internal Server Error');
